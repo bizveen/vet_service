@@ -1,0 +1,83 @@
+{
+  "project_info": {
+    "project_number": "702504483082",
+    "firebase_url": "https://client-care-105c5-default-rtdb.firebaseio.com",
+    "project_id": "client-care-105c5",
+    "storage_bucket": "client-care-105c5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:702504483082:android:3d0a5beb45ef4077c162f3",
+        "android_client_info": {
+          "package_name": "com.example.client_care_extreme"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "702504483082-21lui99ol0v6momkpt52q3ec49clis24.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyALNX90f34gj1XTkWYuJtZIR2-_o8R_jhE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "702504483082-21lui99ol0v6momkpt52q3ec49clis24.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "702504483082-jqt6enkspmk7hknu22blvn78ktgnif3n.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.vetpower.vetCustomerCare"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:702504483082:android:4bf33006232dc8b6c162f3",
+        "android_client_info": {
+          "package_name": "com.vetpower.vet_service"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "702504483082-21lui99ol0v6momkpt52q3ec49clis24.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyALNX90f34gj1XTkWYuJtZIR2-_o8R_jhE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "702504483082-21lui99ol0v6momkpt52q3ec49clis24.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "702504483082-jqt6enkspmk7hknu22blvn78ktgnif3n.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.vetpower.vetCustomerCare"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
