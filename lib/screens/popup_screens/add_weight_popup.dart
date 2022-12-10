@@ -11,7 +11,7 @@ import '../../widgets/date_picker_widget.dart';
 addWeightList({required Pet pet}){
   TextEditingController weightController = TextEditingController();
   DateTime date = DateTime.now();
-  pet.allVaccinations!.sort((a, b) => b!.givenDate! - a!.givenDate!,);
+  pet.vaccinations!.sort((a, b) => b!.givenDate! - a!.givenDate!,);
   Get.defaultDialog(
       title: 'Add Weight',
       content: Column(

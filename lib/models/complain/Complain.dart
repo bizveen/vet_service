@@ -78,6 +78,8 @@ String ? comment;
 
   Complain.fromJson(dynamic json) {
     List<DifferentialDiagnosis> _differentialDiagnosisList = [];
+    //differentialDiagnosis
+    //differentialDiagnosis
     print(json['differentialDiagnosis']);
     if (json['differentialDiagnosis'] != null) {
       Map<dynamic, dynamic> _map =

@@ -6,6 +6,7 @@ import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:multi_select_flutter/util/multi_select_list_type.dart';
+import 'package:vet_service/screens/add_treatment_screen/add_treatment_screen_controller.dart';
 
 
 import '../../../models/complain/Drug.dart';
@@ -21,7 +22,7 @@ class DropDownDrugListFromDatabaseWidgetMultiSelect extends StatefulWidget {
       required this.onConfirm})
       : super(key: key);
   String hintText;
-  Function(List<Drug?>? selected) onConfirm;
+  Function(List<Drug>? selected) onConfirm;
 
   String databasePath;
   String databaseVariable;
@@ -56,6 +57,7 @@ class _DropDownDrugListFromDatabaseWidgetMultiSelectState
             builder: (context, snapshot, _) {
               if (snapshot.isFetching) {
                 return SizedBox(
+
                   height: 50,
                   child: Center(
                     child: Row(
@@ -78,19 +80,22 @@ class _DropDownDrugListFromDatabaseWidgetMultiSelectState
                 }
               }
               return ContainerWithBorder(
+
                 child: MultiSelectDialogField<Drug>(
+                   key: GlobalKey(debugLabel: "Drug List Item"),
                   searchable: true,
-                  initialValue: selectedValues!,
+                  initialValue: Get.find<AddTreatmentScreenController>().selectedDrugsList.value,
                   buttonText: Text(widget.hintText),
                   title: Text(
                     widget.hintText,
                     overflow: TextOverflow.ellipsis,
                   ),
                   items: listItems.map((e) =>
-                      MultiSelectItem(e, e.name!)).toList(),
+                      MultiSelectItem(e, e.name! ,)).toList(),
                   listType: MultiSelectListType.CHIP,
                   separateSelectedItems: true,
                   chipDisplay: MultiSelectChipDisplay<Drug>(
+
                     onTap: (value) {
                       setState(() {
                         selectedValues!.remove(value);

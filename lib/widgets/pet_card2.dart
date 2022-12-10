@@ -30,8 +30,10 @@ class _PetCard2State extends State<PetCard2> {
           onTap: () {
 
         //  Get.to(AddPetScreen(pet: widget.pet, client: widget.client,));
-          Get.to(
-              ViewPetDetailsScreen(petId: widget.pet.id!, client: widget.client!), );
+        //   Get.to(
+        //       ViewPetDetailsScreen(
+        //           pet: widget.pet, client: widget.client!), );
+
 
           },
           child: Card(
@@ -61,11 +63,11 @@ class _PetCard2State extends State<PetCard2> {
                 Container(
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: widget.pet.images!.isEmpty
+                      image: widget.pet.timeLine!.isEmpty
                           ? const CachedNetworkImageProvider(
                               'https://tse3.mm.bing.net/th?id=OIP.6a6-zJFP78MfdKnZnxf3ewAAAA')
                           : CachedNetworkImageProvider(
-                              '${widget.pet.images![ widget.pet.images!.length-1]!.downloadUrl}',
+                              '${widget.pet.timeLine![ widget.pet.timeLine!.length-1]!.images![0]?.downloadUrl!}',
                             ),
                       fit: BoxFit.cover,
                     ),

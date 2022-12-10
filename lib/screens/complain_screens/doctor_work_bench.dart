@@ -2,6 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/database.dart';
 import 'package:get/get.dart';
+import 'package:vet_service/controllers/client_controller.dart';
+import 'package:vet_service/models/client_model.dart';
+import 'package:vet_service/resources/firebase_firestore_methods.dart';
 import '../../models/Pet.dart';
 import '../../models/complain/Complain.dart';
 import '../../resources/database_object_paths/complain_paths.dart';
@@ -12,50 +15,34 @@ import '../chart_screens/weight_chart_screen.dart';
 import 'local_widgets/differential_diagnosis_details_widget.dart';
 import 'local_widgets/treatments_details_widget.dart';
 
-class DifferentialDiagnosisScreen extends StatefulWidget {
+class DoctorWorkBenchScreen extends GetWidget<ClientController> {
   Complain complain;
 
 
-  DifferentialDiagnosisScreen({
+  DoctorWorkBenchScreen({
     Key? key,
     required this.complain,
   }) : super(key: key);
 
-  @override
-  State<DifferentialDiagnosisScreen> createState() =>
-      _DifferentialDiagnosisScreenState();
-}
 
-class _DifferentialDiagnosisScreenState
-    extends State<DifferentialDiagnosisScreen> {
   TextEditingController dDCommentController = TextEditingController();
 
-  @override
-  void dispose() {
 
-    super.dispose();
-    dDCommentController.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
-    return FirebaseDatabaseQueryBuilder(
-      pageSize: 50,
-      query: FirebaseDatabaseMethods().reference(
-        path: 'complains/all/${widget.complain.id}',
-      ),
-      builder: (context, snapshot, _) {
-        Complain complain = Complain.fromJson(
-          dataSnapShotListToMap(children: snapshot.docs),
-        );
+    return StreamBuilder<ClientModel>(
+
+      stream: controller.getClientFromId (complain.clientID!),
+      builder: (context, snapshot) {
+        if(snapshot.connectionState == ConnectionState.waiting){
+          return Center(child: CircularProgressIndicator());}
+        ClientModel? client = snapshot.data;
+        Pet pet = client!.pets!.where((element) => element!.id == complain.petId).first!;
+        Complain cmpl = pet.complains!.where((element) => element!.id == complain.id).first!;
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Differential Diagnosis Screen'),
+            title: const Text("Doctor's Work Bench"),
           ),
           body: SingleChildScrollView(
             child: Padding(
@@ -74,24 +61,13 @@ class _DifferentialDiagnosisScreenState
                       ),
                       Text(dateWithTimeFormatter
                           .format(DateTime.fromMicrosecondsSinceEpoch(int.parse(
-                          (complain.startedDateTime ?? '0').toString())))
+                          (cmpl.startedDateTime ?? '0').toString())))
                           .toString()),
                       Text(
                         'Pet Details',
                         style: Get.textTheme.headline6,
                       ),
-                      FutureBuilder(
-                          future: FirebaseDatabaseMethods()
-                              .getPetFromID(id: widget.complain.petId!),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            }
-                            if (snapshot.connectionState == ConnectionState.done) {
-                              Pet pet = snapshot.data as Pet;
-                              return Column(
+                     Column(
                                 children: [
                                   Table(
 
@@ -131,26 +107,23 @@ class _DifferentialDiagnosisScreenState
 
                                   pet.getComplainSummery(),
                                 ],
-                              );
-                            }
-                            return Center(
-                              child: Text('Error'),
-                            );
-                          }),
+                     )
+
+
                     ],
                   ),
                   // ClientCardWidget(
                   //     clientModel: widget.client,
                   //     selectedPetId: widget.complain.petId),
 
-                  widget.complain.getFirstInspectionSummery(),
+                  complain.getFirstInspectionSummery(),
 
                   DiffrentialDiagnosisDetailsWidget(
-                    complainStatus: ComplainStatus.values[complain.status!],
-                    complain: complain,
+                    complainStatus: ComplainStatus.values[cmpl.status??0],
+                    complain: cmpl,
                   ),
                   TreatmentDetailsWidget(
-                    complain: complain,
+                    complain: cmpl,
                   ),
                 ],
               ),

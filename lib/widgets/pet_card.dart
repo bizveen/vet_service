@@ -37,8 +37,10 @@ class _PetCardState extends State<PetCard> {
       onAddButtonPressed: () async{
 
         Get.to(ViewPetDetailsScreen(
-          client:  await FirebaseDatabaseMethods().getClientFromID(id: widget.pet.clientId!),
-          petId:widget.pet.id! ,
+          // client:  await FirebaseDatabaseMethods().getClientFromID(id: widget.pet.clientId!),
+          // pet:widget.pet ,
+          petId: widget.pet.id!,
+            clientId: widget.pet.clientId!,
         ));
       },
       onArrowButtonPressed: (){

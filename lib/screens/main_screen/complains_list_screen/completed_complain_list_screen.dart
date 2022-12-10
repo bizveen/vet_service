@@ -42,9 +42,10 @@ class _CompletedComplainListScreenState
                 return ListTile(
                   onTap: () async {
                     Get.to(ComplainDetailsScreen(
-                        complain: complain,
-                        client: await FirebaseDatabaseMethods()
-                            .getClientFromID(id :complain.clientID!),complainStatus: ComplainStatus.completed,));
+                        complainId: complain.id!,
+                        clientId:complain.clientID!,
+                      petId: complain.petId!,
+                      complainStatus: ComplainStatus.completed,));
                   },
                   title: Text(complain.getTitle()),
                 );

@@ -121,9 +121,10 @@ DateTime? date = DateTime.now();
                            FirebaseStorageMethods().uploadImageToStorage(
                                oneImage: true,
                                title: 'GRN Image',
-                               addressPaths: clientPaths(clientStatus: ClientStatus.real),
+                              fileType: FileType.productImage,
+                               inventoryInId: id,
                                file: image!,
-                               folderPath: '$doctorPath/products/$id');
+                              );
                          }
 
                       }

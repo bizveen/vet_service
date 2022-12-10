@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:string_extensions/string_extensions.dart';
 import 'package:uuid/uuid.dart';
+import 'package:vet_service/screens/view_details_screens/view_pet_details_screen/view_pet_details_screen.dart';
 import '../../constants.dart';
 import '../../controllers/global_live_variables_controller.dart';
 import '../../models/Pet.dart';
@@ -156,14 +157,14 @@ class _AddPetScreenState extends State<AddPetScreen> {
                   children: [
                     Row(
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ImagePickerWidgetRound(
-                              pickedImage: (_image) {
-                                image = _image;
-                              },
-                              runningImage: image),
-                        ),
+                        // Padding(
+                        //   padding: const EdgeInsets.all(8.0),
+                        //   child: ImagePickerWidgetRound(
+                        //       pickedImage: (_image) {
+                        //         image = _image;
+                        //       },
+                        //       runningImage: image),
+                        // ),
                         Expanded(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
@@ -190,70 +191,8 @@ class _AddPetScreenState extends State<AddPetScreen> {
                                   ],
                                 ),
                               ),
-                              ContainerWithBorder(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      const Text('Breed'),
-                                      TinySpace(),
-                                      Obx(() {
-                                        return GFButtonWidget(
-                                          name: screenController
-                                              .breed.value.toTitleCase!,
-                                          onPressed: () {
-                                            Get.to(
-                                                DropDownListFromDatabaseScreen(
-                                                    hintText: 'Search Breed',
-                                                    onSelect: (value) {
-                                                      screenController
-                                                          .breed.value = value!;
-                                                    },
-                                                    notSelectedDialogText:
-                                                        'Do you want to add this value to database?',
-                                                    onConfirm: (value) {
-                                                      screenController
-                                                          .breed.value = value;
-                                                    },
-                                                    databasePath:
-                                                        '$doctorPath/breeds',
-                                                    databaseVariable: 'name'));
-                                          },
-                                        ); // Text(screenController.breed.value.toTitleCase!));
-                                      }),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              ContainerWithBorder(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      const Text('Gender'),
-                                      TinySpace(),
-                                      GFButtonWidget(
-                                        color: isMale
-                                            ? Theme.of(context).primaryColor
-                                            : Theme.of(context)
-                                                .primaryColor
-                                                .withOpacity(0.5),
-                                        onPressed: () {
-                                          setState(() {
-                                            isMale = !isMale;
-                                          });
-                                        },
-                                        name: isMale ? 'Male' : "Female",
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
+                              _breedSelectorVidget(),
+                              _genderSelectorWidget(context),
                               Row(
                                 mainAxisSize: MainAxisSize.min,
                                 mainAxisAlignment:
@@ -360,16 +299,15 @@ class _AddPetScreenState extends State<AddPetScreen> {
                           //     .get();
                           // ClientModel updatedClient = ClientModel.fromJson(
                           //     snap.value as Map<dynamic, dynamic>);
-                          if (image != null) {
-                            FirebaseStorageMethods().uploadImageToStorage(
-                                title: 'Pet Profile Image',
-                                addressPaths: petPaths(clientId: _clientId!)
-                                    .map((e) => '$e/${_pet!.id}')
-                                    .toList(),
-                                file: image!,
-                                folderPath: 'pets/${_pet!.id}');
-                          }
-                          Get.back();
+                          // if (image != null) {
+                          //   FirebaseStorageMethods().uploadImageToStorage(
+                          //     fileType: FileType.petImage,
+                          //       title: 'Pet Profile Image',
+                          //         petId: _pet!.id!,
+                          //       file: image!,
+                          //      clientId: widget.client!.id!);
+                          // }
+                          Get.to(ViewPetDetailsScreen(clientId: _pet!.clientId!, petId: _pet!.id!));
                         }
                       },
                     ),
@@ -379,27 +317,7 @@ class _AddPetScreenState extends State<AddPetScreen> {
                       },
                       text: "Cancel",
                     ),
-                    ElevatedButton(
-                        onPressed: () async {
-                          String id =
-                              '${dateTimeDescender(dateTime: DateTime.now())}';
-                          _pet = Pet(
-                              id: _pet != null ? _pet?.id! : id,
-                              clientId: _clientId!,
-                              name: petNameController.text.trim(),
-                              breed: screenController.breed.value,
-                              gender: isMale ? 'male' : 'female',
-                              birthDay: birthDay != null
-                                  ? birthDay!.microsecondsSinceEpoch
-                                  : null,
-                              doctorId: doctorId,
 
-                              qrCode: qrController.text.trim(),
-
-                              status: 'normal');
-                          // FirebaseFirestoreMethods().addPetToFirestore(_pet!);
-                        },
-                        child: Text('Test Firestore'))
                   ],
                 ),
               ),
@@ -408,6 +326,76 @@ class _AddPetScreenState extends State<AddPetScreen> {
         ),
       ),
     );
+  }
+
+  ContainerWithBorder _genderSelectorWidget(BuildContext context) {
+    return ContainerWithBorder(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    const Text('Gender'),
+                                    TinySpace(),
+                                    GFButtonWidget(
+                                      color: isMale
+                                          ? Theme.of(context).primaryColor
+                                          : Theme.of(context)
+                                              .primaryColor
+                                              .withOpacity(0.5),
+                                      onPressed: () {
+                                        setState(() {
+                                          isMale = !isMale;
+                                        });
+                                      },
+                                      name: isMale ? 'Male' : "Female",
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+  }
+
+  ContainerWithBorder _breedSelectorVidget() {
+    return ContainerWithBorder(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    const Text('Breed'),
+                                    TinySpace(),
+                                    Obx(() {
+                                      return GFButtonWidget(
+                                        name: screenController
+                                            .breed.value.toTitleCase!,
+                                        onPressed: () {
+                                          Get.to(
+                                              DropDownListFromDatabaseScreen(
+                                                  hintText: 'Search Breed',
+                                                  onSelect: (value) {
+                                                    screenController
+                                                        .breed.value = value!;
+                                                  },
+                                                  notSelectedDialogText:
+                                                      'Do you want to add this value to database?',
+                                                  onConfirm: (value) {
+                                                    screenController
+                                                        .breed.value = value;
+                                                  },
+                                                  databasePath:
+                                                      '$doctorPath/breeds',
+                                                  databaseVariable: 'name'));
+                                        },
+                                      ); // Text(screenController.breed.value.toTitleCase!));
+                                    }),
+                                  ],
+                                ),
+                              ),
+                            );
   }
 
   SizedBox clientSearchWidget() {

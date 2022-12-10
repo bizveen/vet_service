@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:vet_service/constants.dart';
 
 import '../../controllers/global_live_variables_controller.dart';
 import '../../resources/firebase_firestore_methods.dart';
@@ -30,7 +31,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
       child: Drawer(
         child: Column(
           children: [
-            Get.find<GlobalLiveVariablesController>().getIsAdmin()
+           isAdmin
                 ? Column(
                   children: [
                     ElevatedButton(

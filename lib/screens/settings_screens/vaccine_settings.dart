@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/database.dart';
 import 'package:get/get.dart';
+import 'package:vet_service/constants.dart';
 
 import '../../controllers/global_live_variables_controller.dart';
 import '../../resources/firebase_database_methods.dart';
@@ -26,7 +27,7 @@ class _VaccineSettingsState extends State<VaccineSettings> {
         child: FirebaseDatabaseDataTable(
           query: FirebaseDatabaseMethods().reference(
               path:
-                  'users/${Get.find<GlobalLiveVariablesController>().currentDoctor}/vaccines'),
+                  '$doctorPath/vaccines'),
           columnLabels: const {
             'name': Text('Name'),
             'retailPrice': Text('Retail Price'),

@@ -17,7 +17,7 @@ import '../vaccination_screens/view_vaccination_details_screen.dart';
 viewComplainList({required Pet pet}){
 
   Get.defaultDialog(
-      title: 'Vaccination Records (${pet.allComplains!.length})',
+      title: 'Vaccination Records (${pet.complains!.length})',
 onConfirm: (){
         Get.back();
 },
@@ -36,7 +36,7 @@ onConfirm: (){
 
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              children: pet.allComplains!.map((e) =>
+              children: pet.complains!.map((e) =>
                   PetRecordCardWidget(
                     title: e!.getTitle(),
                     leading:
@@ -48,7 +48,11 @@ onConfirm: (){
                     onAddButtonPressed: (){},
                     onArrowButtonPressed: ()async{
                       ClientModel client = await FirebaseDatabaseMethods().getClientFromID(id: e.clientID!);
-                      Get.to(ComplainDetailsScreen(complain: e, client: client, complainStatus: ComplainStatus.all));
+                      Get.to(ComplainDetailsScreen(
+                          complainId: e.id!,
+                          clientId: e.clientID!,
+                          petId: e.petId!,
+                          complainStatus: ComplainStatus.all));
                     },
                     child: Column(
                       children: [

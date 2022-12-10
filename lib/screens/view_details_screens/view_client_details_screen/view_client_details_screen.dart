@@ -9,6 +9,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:string_extensions/string_extensions.dart';
 import 'package:uuid/uuid.dart';
+import 'package:vet_service/controllers/client_controller.dart';
 import 'package:vet_service/resources/firebase_firestore_methods.dart';
 import '../../../models/Contact.dart';
 import '../../../models/client_model.dart';
@@ -27,36 +28,29 @@ import '../../logs_list_screen.dart';
 import '../../shop_screens/products_showcase_screen.dart';
 import '../view_pet_details_screen/view_pet_details_screen.dart';
 
-class ViewClientDetailsScreen extends StatefulWidget {
+class ViewClientDetailsScreen extends GetWidget<ClientController> {
   String clientId;
   String? petId;
 
   ViewClientDetailsScreen({Key? key, required this.clientId, this.petId})
       : super(key: key);
 
-  @override
-  State<ViewClientDetailsScreen> createState() =>
-      _ViewClientDetailsScreenState();
-}
 
-class _ViewClientDetailsScreenState extends State<ViewClientDetailsScreen> {
-  TextEditingController addNewNumberController = TextEditingController();
-  TextEditingController commentController = TextEditingController();
-  TextEditingController balanceController = TextEditingController();
+
   late ClientModel _clientModel;
 
-  @override
-  void initState() {
-    DocumentReference reference =
-        FirebaseFirestore.instance.collection('clients').doc(widget.clientId);
-    reference.snapshots().listen((querySnapshot) {
-      setState(() {
-        _clientModel =
-            ClientModel.fromJson(querySnapshot.data() as Map<String, dynamic>);
-      });
-    });
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   DocumentReference reference =
+  //       FirebaseFirestore.instance.collection('clients').doc(widget.clientId);
+  //   reference.snapshots().listen((querySnapshot) {
+  //     setState(() {
+  //       _clientModel =
+  //           ClientModel.fromJson(querySnapshot.data() as Map<String, dynamic>);
+  //     });
+  //   });
+  //   super.initState();
+  // }
 
   final formkey = GlobalKey<FormState>();
 
@@ -66,15 +60,15 @@ class _ViewClientDetailsScreenState extends State<ViewClientDetailsScreen> {
     await Get.defaultDialog(
         content: Column(
           children: [
-            TextFieldX(label: 'New Number', controller: addNewNumberController),
-            TextFieldX(label: 'Comment', controller: commentController),
+            TextFieldX(label: 'New Number', controller: controller.addNewNumberController),
+            TextFieldX(label: 'Comment', controller: controller.commentController),
           ],
         ),
         onConfirm: () async {
           Contact contact = Contact(
             id: Uuid().v1(),
-            contactNumber: addNewNumberController.text.trim(),
-            comment: commentController.text.trim(),
+            contactNumber: controller.addNewNumberController.text.trim(),
+            comment: controller.commentController.text.trim(),
             clientId: client.id!,
             clientName: client.name,
             address: client.address,
@@ -92,18 +86,20 @@ class _ViewClientDetailsScreenState extends State<ViewClientDetailsScreen> {
         });
   }
 
-  @override
-  void dispose() {
-    addNewNumberController.dispose();
-    commentController.dispose();
-    balanceController.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   addNewNumberController.dispose();
+  //   commentController.dispose();
+  //   balanceController.dispose();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('clients').doc(widget.clientId).snapshots(),
+    return
+      StreamBuilder<ClientModel>(
+        initialData: loadingClient,
+        stream: controller.getClientFromId(clientId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Scaffold(
@@ -125,8 +121,8 @@ class _ViewClientDetailsScreenState extends State<ViewClientDetailsScreen> {
               ),
             );
           }
-
-          ClientModel client = ClientModel.fromJson(snapshot.data as Map<String , dynamic>);
+//print(snapshot.data as DocumentSnapshot);
+          ClientModel client = snapshot.data as ClientModel;// ClientModel.fromJson((snapshot.data  as DocumentSnapshot).data());
 
           return SafeArea(
             child: Builder(builder: (context) {
@@ -190,12 +186,13 @@ class _ViewClientDetailsScreenState extends State<ViewClientDetailsScreen> {
                                 ));
                               },
                               child: const Text('Pet Shop')),
+                         BillLine(value: client.balance ?? '0' , label: "Previous Balance"),
                           ElevatedButton(
                               onPressed: () {
                                 Get.defaultDialog(
                                     title: 'Add a Balance',
                                     content: TextFormField(
-                                      controller: balanceController,
+                                      controller: controller.balanceController,
                                       validator: (value) {
                                         if (value.isNumber) {
                                           return 'Please Enter a Number';
@@ -204,35 +201,13 @@ class _ViewClientDetailsScreenState extends State<ViewClientDetailsScreen> {
                                     ),
                                     onConfirm: () {
                                       formkey.currentState!.validate();
-                                      if (balanceController.text
+                                      if (controller.balanceController.text
                                           .trim()
-                                          .isNumber) {
-                                        client.pets!.forEach((element) async {
-                                          await FirebaseDatabaseMethods()
-                                              .updateBatch(
-                                            updatePetJson(
-                                                petId: element!.id!,
-                                                clientId: client.id!,
-                                                json: [
-                                                  balanceController.text.trim()
-                                                ],
-                                                variables: [
-                                                  'balance'
-                                                ])
-                                              ..addAll(updateClientJson(
-                                                  clientId: client.id!,
-                                                  clientStatus:
-                                                      ClientStatus.real,
-                                                  json: [
-                                                    balanceController.text
-                                                        .trim()
-                                                  ],
-                                                  variables: [
-                                                    'balance'
-                                                  ])),
-                                          );
-                                        });
+                                          .isNumber){
+                                        FirebaseFirestoreMethods().firestore.collection('clients').doc(clientId).update(
+                                            {"balance" : controller.balanceController.text});
                                       }
+                                      Get.back();
                                     });
                               },
                               child: const Text('Add A Balance')),
@@ -427,9 +402,13 @@ class _ViewClientDetailsScreenState extends State<ViewClientDetailsScreen> {
                           child: IconButton(
                             onPressed: () async {
                               Get.to(ViewPetDetailsScreen(
-                                  petId: e.id!,
-                                  client: await FirebaseDatabaseMethods()
-                                      .getClientFromID(id: e.clientId!)));
+                                  // pet: e,
+                                  // client: await FirebaseDatabaseMethods()
+                                  //     .getClientFromID(id: e.clientId!)
+                                clientId: e.clientId!,
+                                petId: e.id!,
+                                      ));
+
                             },
                             icon: Icon(
                               Icons.arrow_circle_right_outlined,

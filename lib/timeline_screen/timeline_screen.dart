@@ -13,8 +13,13 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
 import 'package:timeline_tile/timeline_tile.dart';
+import 'package:vet_service/controllers/client_controller.dart';
+import 'package:vet_service/models/client_model.dart';
+import 'package:vet_service/resources/firebase_firestore_methods.dart';
+import 'package:vet_service/resources/firebase_storage_methods.dart';
 
 import '../models/Image_model.dart';
+import '../models/Pet.dart';
 import '../models/TimeLineElement.dart';
 import '../models/complain/Complain.dart';
 import '../resources/database_object_paths/time_line_paths.dart';
@@ -22,7 +27,7 @@ import '../resources/firebase_database_methods.dart';
 import '../utils/image_picker.dart';
 import '../utils/utils.dart';
 
-class TimelineScreen extends StatefulWidget {
+class TimelineScreen extends GetWidget<ClientController> {
   String clientId;
   String petId;
   Complain? complain;
@@ -31,20 +36,10 @@ class TimelineScreen extends StatefulWidget {
       {Key? key, required this.clientId, this.complain, required this.petId})
       : super(key: key);
 
-  @override
-  State<TimelineScreen> createState() => _TimelineScreenState();
-}
 
-class _TimelineScreenState extends State<TimelineScreen> {
   List<TimeLineElement> timeLineElementList = [];
   List<Uint8List> _images = [];
 String? _comment;
-  @override
-  void dispose() {
-
-    super.dispose();
-
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +58,27 @@ String? _comment;
                   _images = images;
                   _comment = comment;
                 });
-                   saveTimeLineImagesToFirebase(clientId: widget.clientId , images: _images, petId: widget.petId , complain: widget.complain, comment: _comment) ;
+
+                String timeLIneId = Uuid().v1();
+                TimeLineElement timeLineElement = TimeLineElement(
+                  id: timeLIneId,
+                  addedById: FirebaseAuth.instance.currentUser!.uid,
+
+                  dateTime: DateTime.now().microsecondsSinceEpoch,
+                );
+
+               await  FirebaseFirestoreMethods().firestore.collection('clients').doc(clientId).update(
+                    {
+                      'pets.$petId.timeLine.${timeLineElement.id}' : timeLineElement.toJson()
+                    });
+               _images.forEach((element) {
+
+                 FirebaseStorageMethods().uploadImageToStorage(
+                     fileType: FileType.timeLineImage, file: element, title: "timeLine Images" , clientId: clientId ,
+                     petId: petId , timeLineElementId: timeLIneId );
+               });
+                   // saveTimeLineImagesToFirebase(clientId: clientId , images: _images, petId: petId ,
+                   //     complain: complain, comment: _comment) ;
 
                 // Get.defaultDialog(
                 //     title: 'Add A Time Line Element',
@@ -158,54 +173,54 @@ String? _comment;
                 //           complain: widget.complain));
                 //       Get.back();
                 //     });
-                setState(() {
 
-                });
               },
               child: Text('Add Time Line Element')),
           Expanded(
 
-            child: FirebaseDatabaseListView(
-              shrinkWrap: true,
-                query: widget.complain != null
-                    ? FirebaseDatabaseMethods().reference(path: 'complains/all/${widget.complain!.id!}/timeLine')
-                 : FirebaseDatabaseMethods().reference(path: 'pets/${widget.petId}/timeLine')
-                ,
-                itemBuilder: (context , snapshot){
-                  TimeLineElement timeLineElement = TimeLineElement.fromJson(snapshot.value);
-                  return TimelineTile(
-                    alignment: TimelineAlign.manual,
-                    lineXY: 0.3,
-                    startChild:
-                    Container(
+            child: StreamBuilder<ClientModel>(
+              stream: controller.getClientFromId(clientId),
+              builder: (context, snapshot) {
+                Pet? pet = snapshot.data?.pets?.where((element) => element!.id == petId).first;
+                if(pet!.timeLine!= null && pet.timeLine!.isNotEmpty){
+                return ListView.builder(
+                  shrinkWrap: true,
+                    itemCount: pet!.timeLine!.length,
+                    itemBuilder: (context , index){
+                      TimeLineElement timeLineElement = pet.timeLine![index]!;
+                      return TimelineTile(
+                        alignment: TimelineAlign.manual,
+                        lineXY: 0.3,
+                        startChild:
+                        Container(
 
 
-                      child:  Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(dateIntToFormattedDateWithTime(
-                            fromMicroSecondsSinceEpoch: timeLineElement.dateTime!)),
-                      ),
+                          child:  Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(dateIntToFormattedDateWithTime(
+                                fromMicroSecondsSinceEpoch: timeLineElement.dateTime!)),
+                          ),
 
-                    ),
-                    endChild: Container(
-                      constraints: const BoxConstraints(
-                        minHeight: 120,
+                        ),
+                        endChild: Container(
+                          constraints: const BoxConstraints(
+                            minHeight: 120,
 
-                      ),
+                          ),
 
-                      child: Column(
-                        children: [
+                          child: Column(
+                            children: [
 Text(timeLineElement.description ?? ''),
-                          Expanded(
+                              Expanded(
 
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: (timeLineElement.images!=null && timeLineElement.images!.isNotEmpty)
-                                    ? timeLineElement.images!.map((e) => SizedBox(height: 150, width: 100 ,
-                                  child: InkWell(
-                                      onTap: () {
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: (timeLineElement.images!=null && timeLineElement.images!.isNotEmpty)
+                                        ? timeLineElement.images!.map((e) => SizedBox(height: 150, width: 100 ,
+                                      child: InkWell(
+                                          onTap: () {
 //                                         Get.defaultDialog(
 //                                           title: 'Image',
 //                                          actions: [
@@ -234,19 +249,22 @@ Text(timeLineElement.description ?? ''),
 //                                             child: CachedNetworkImage(imageUrl: e!.downloadUrl!,),
 //                                           ),
 //                                         );
-                                      //TODO : Need to do this
-                                      },
+                                          //TODO : Need to do this
+                                          },
 
-                                      child: CachedNetworkImage(imageUrl: e!.downloadUrl!,)),)).toList()
-                                    : [Text("No Images")] ,
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  );
-                }),
+                                          child: CachedNetworkImage(imageUrl: e!.downloadUrl!,)),)).toList()
+                                        : [Text("No Images")] ,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      );
+                    });
+              } else{ return Center(child: Text("No Time Line"),);}
+              }
+            ),
           )
         ],
       ),

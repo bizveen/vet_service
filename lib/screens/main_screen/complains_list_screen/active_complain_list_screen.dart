@@ -43,9 +43,10 @@ class _ActiveComplainListScreenState extends State<ActiveComplainListScreen> {
                 return InkWell(
                   onTap: ()async{
                     Get.to(ComplainDetailsScreen(
-                        complain: complain,
-                        client: await FirebaseDatabaseMethods()
-                        .getClientFromID(id : complain.clientID!), complainStatus: ComplainStatus.all,));
+                        complainId: complain.id!,
+                        clientId:complain.clientID!,
+                      petId: complain.petId!,
+                      complainStatus: ComplainStatus.all,));
                   },
                   child: ComplainFollowupCard(complainStatus: ComplainStatus.active, complain: complain, )
                 );

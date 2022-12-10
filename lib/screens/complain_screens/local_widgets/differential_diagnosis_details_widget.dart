@@ -1,8 +1,8 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
+import 'package:vet_service/resources/firebase_firestore_methods.dart';
 import '../../../constants.dart';
 import '../../../models/complain/Complain.dart';
 import '../../../models/complain/DifferentialDiagnosis.dart';
@@ -19,15 +19,18 @@ class DiffrentialDiagnosisDetailsWidget extends StatefulWidget {
       : super(key: key);
   final Complain complain;
   ComplainStatus complainStatus;
+
   @override
   State<DiffrentialDiagnosisDetailsWidget> createState() =>
       _DiffrentialDiagnosisDetailsWidgetState();
 }
+
 class _DiffrentialDiagnosisDetailsWidgetState
     extends State<DiffrentialDiagnosisDetailsWidget> {
   late List<DifferentialDiagnosis?>? _differentialList;
   TextEditingController dDCommentController = TextEditingController();
   Map<String, dynamic> uploadableMap = {};
+
   @override
   void dispose() {
     dDCommentController.dispose();
@@ -51,13 +54,19 @@ class _DiffrentialDiagnosisDetailsWidgetState
       children: [
         if (widget.complain.differentialDiagnosisList != null)
           ReorderableListView.builder(
+
             itemCount: widget.complain.differentialDiagnosisList!.length,
             itemBuilder: (context, index) {
-              return ListTile(
-                  key: ValueKey(
-                      widget.complain.differentialDiagnosisList![index]!.id!),
-                  title: Text(widget
-                      .complain.differentialDiagnosisList![index]!.name!));
+              return SizedBox(
+                key: ValueKey(
+                    widget.complain.differentialDiagnosisList![index]!.id!),
+                height: 200,
+                child: ListTile(
+
+
+                    title: Text(widget
+                        .complain.differentialDiagnosisList![index]!.name!)),
+              );
             },
             shrinkWrap: true,
             onReorder: (int oldIndex, int newIndex) async {
@@ -66,8 +75,8 @@ class _DiffrentialDiagnosisDetailsWidgetState
                 index = newIndex - 1;
               }
               uploadableMap.clear();
-              final dd = widget.complain.differentialDiagnosisList!
-                  .removeAt(oldIndex);
+              final dd =
+                  widget.complain.differentialDiagnosisList!.removeAt(oldIndex);
               widget.complain.differentialDiagnosisList!
                   .insert(index, dd!.copyWith(order: index));
               List<DifferentialDiagnosis?>? tempList =
@@ -76,17 +85,26 @@ class _DiffrentialDiagnosisDetailsWidgetState
 
               int i = 0;
               for (var element in tempList) {
-                uploadableMap.addAll(updateComplainSubJson(
-                    petId: widget.complain.petId!,
-                    clientId: widget.complain.clientID!,
-                    json: [tempList[i]!.copyWith(order: i).toJson()],
-                    id: tempList[i]!.id!,
-                    complainId: widget.complain.id!,
-                    complainSub: ComplainSub.differentialDiagnosis,
-                    complainStatus: ComplainStatus.all));
+                // uploadableMap.addAll(updateComplainSubJson(
+                //     petId: widget.complain.petId!,
+                //     clientId: widget.complain.clientID!,
+                //     json: [tempList[i]!.copyWith(order: i).toJson()],
+                //     id: tempList[i]!.id!,
+                //     complainId: widget.complain.id!,
+                //     complainSub: ComplainSub.differentialDiagnosis,
+                //     complainStatus: ComplainStatus.all));
+
+                uploadableMap[element!.id!] = tempList[i]!.copyWith(order: i).toJson();
                 i++;
               }
-              await FirebaseDatabaseMethods().updateBatch(uploadableMap);
+              await FirebaseFirestoreMethods()
+                  .firestore
+                  .collection('clients')
+                  .doc(widget.complain.clientID)
+                  .update({
+                "pets.${widget.complain.petId}.complains.${widget.complain.id}.differentialDiagnosis":
+                    uploadableMap
+              });
             },
           )
         else
@@ -96,7 +114,7 @@ class _DiffrentialDiagnosisDetailsWidgetState
         String _value = '';
         String id = const Uuid().v1();
         Get.defaultDialog(
-            onConfirm: () {
+            onConfirm: () async {
               DifferentialDiagnosis differentialDiagnosis =
                   DifferentialDiagnosis(
                 path: '${widget.complain.path}/differentialDiagnosis/$id',
@@ -105,30 +123,22 @@ class _DiffrentialDiagnosisDetailsWidgetState
                 order: 0,
                 comment: dDCommentController.text.trim(),
               );
-              Log log = Log(
-                  dateTime: DateTime.now().microsecondsSinceEpoch,
-                  complainId: widget.complain.id!,
-                  addedBy: FirebaseAuth.instance.currentUser!.email!,
-                  isACall: false,
-                  comment: 'A D-Diagnosis Added');
-              FirebaseDatabaseMethods().updateBatch(
-                  updateComplainSubJson(
-                petId: widget.complain.petId!,
-                clientId: widget.complain.clientID!,
-                json: [differentialDiagnosis.toJson()],
-                id: differentialDiagnosis.id!,
-                complainId: widget.complain.id!,
-                complainSub: ComplainSub.differentialDiagnosis,
-                complainStatus: widget.complainStatus,
-              )..addAll(updateComplainSubJson(
-                  petId: widget.complain.petId!,
-                  clientId: widget.complain.clientID!,
-                  json: [differentialDiagnosis.toJson()],
-                  id: differentialDiagnosis.id!,
-                  complainId: widget.complain.id!,
-                  complainSub: ComplainSub.differentialDiagnosis,
-                  complainStatus: ComplainStatus.all,
-                )));
+              // Log log = Log(
+              //     dateTime: DateTime.now().microsecondsSinceEpoch,
+              //     complainId: widget.complain.id!,
+              //     addedBy: FirebaseAuth.instance.currentUser!.email!,
+              //     isACall: false,
+              //     comment: 'A D-Diagnosis Added');
+
+              await FirebaseFirestoreMethods()
+                  .firestore
+                  .collection('clients')
+                  .doc(widget.complain.clientID)
+                  .update({
+                "pets.${widget.complain.petId}.complains.${widget.complain.id}.differentialDiagnosis.${differentialDiagnosis.id}":
+                    differentialDiagnosis.toJson()
+              });
+
               Get.back();
               dDCommentController.clear();
             },

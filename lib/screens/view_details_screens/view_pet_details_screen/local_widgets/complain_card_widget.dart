@@ -50,7 +50,7 @@ bool complainLoading = false;
           viewComplainList(pet: widget.pet);
         },
         title: 'Complains',
-        child:(widget.pet.allComplains!= null && widget.pet.allComplains!.isNotEmpty) ? Column(
+        child:(widget.pet.complains!= null && widget.pet.complains!.isNotEmpty) ? Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -62,15 +62,18 @@ bool complainLoading = false;
              children: [
                Text(
                  dateFormatter.format(DateTime.fromMicrosecondsSinceEpoch(
-                     widget.pet.allComplains!.last!.startedDateTime!)),
+                     widget.pet.complains!.last!.startedDateTime!)),
                  style: const TextStyle(fontSize: 11),
                ),
                TinySpace(),
 
-               Expanded(child: Text(widget.pet.allComplains!.last!.getTitle(withPetName: false), overflow: TextOverflow.ellipsis,)),
+               Expanded(child: Text(widget.pet.complains!.last!.getTitle(withPetName: false), overflow: TextOverflow.ellipsis,)),
                IconButton(onPressed: () async {
-                 Get.to(ComplainDetailsScreen(complain: widget.pet.allComplains!.first!,
-                     client: widget.client, complainStatus: ComplainStatus.all));
+                 Get.to(ComplainDetailsScreen(
+                     complainId: widget.pet.complains!.first!.id!,
+                     clientId: widget.client.id!,
+                     petId: widget.pet.id!,
+                     complainStatus: ComplainStatus.all));
                }, icon: Icon(Icons.arrow_circle_right_outlined))
              ],
            ),

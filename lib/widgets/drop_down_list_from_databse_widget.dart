@@ -28,7 +28,7 @@ class DropDownListFromDatabaseWidget extends StatefulWidget {
 
 class _DropDownListFromDatabaseWidgetState
     extends State<DropDownListFromDatabaseWidget> {
-  List<String> listItems = [];
+  List<String?> listItems = [];
   String? selectedValue;
   bool isSelected = false;
   bool isUploading = false;
@@ -77,7 +77,7 @@ class _DropDownListFromDatabaseWidgetState
                       );
                 }
               }
-              return GFSearchBar<String>(
+              return GFSearchBar<String?>(
                 controller: searchController,
                 searchList: listItems,
 
@@ -151,16 +151,16 @@ class _DropDownListFromDatabaseWidgetState
     );
   }
 
-  List<String> filterMethod(searchText) {
-    List<String> filteredList = [];
-    List<String> tempList = listItems;
-    List<String> subWords = searchText.split(' ');
+  List<String?> filterMethod(searchText) {
+    List<String?> filteredList = [];
+    List<String?> tempList = listItems;
+    List<String?> subWords = searchText.split(' ');
     for (int i = 0; i < subWords.length; i++) {
       tempList = tempList
           .where((element) => element
               .toString()
               .toLowerCase()
-              .contains(subWords[i].toLowerCase()))
+              .contains(subWords[i]!.toLowerCase()))
           .toList();
       filteredList  = tempList;
     }

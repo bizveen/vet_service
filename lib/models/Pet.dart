@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:string_extensions/string_extensions.dart';
+import 'package:vet_service/models/TimeLineElement.dart';
 
 import 'Image_model.dart';
 import 'PregnancyCycle.dart';
@@ -26,10 +27,8 @@ class Pet {
   int? birthDay;
   int? addedDateTime;
   String? breed;
-  List<Complain?>? allComplains;
-  List<Complain?>? activeComplains;
-  List<Complain?>? completeComplains;
-  List<Complain?>? dismissedComplains;
+  List<Complain?>? complains;
+
   String? gender;
   String? id;
   String? name;
@@ -43,89 +42,54 @@ class Pet {
   String? balance;
   String? status;
   List<PregnancyCycle?>? pregnancyCycles;
-  List<Vaccination?>? allVaccinations;
-  List<Vaccination?>? calledVaccinations;
-  List<Vaccination?>? notCalledVaccinations;
-  List<Vaccination?>? dismissedVaccinations;
+  List<Vaccination?>? vaccinations;
+
   List<Weight?>? weight;
-  List<ImageModel?>? images;
+  List<TimeLineElement?>? timeLine;
 
 
-  Pet(
-      {this.attention,
-      this.birthDay,
-      this.breed,
-      this.activeComplains,
-      this.completeComplains,
-      this.dismissedComplains,
-      this.gender,
-      this.id,
-      required this.clientId,
-      this.name,
-      this.path,
-      this.qrCode,
-      this.pregnancyCycles,
-      this.allVaccinations,
-      this.calledVaccinations,
-      this.notCalledVaccinations,
-      this.dismissedVaccinations,
-      this.weight,
-      this.clientName,
-      this.doctorId,
-      this.knowBirthDay = true,
-      this.images,
-        this.birthYear,
-      this.allComplains,
-        this.balance,
-        this.status,
-        this.addedDateTime
-      });
+  Pet({this.attention,
+    this.birthDay,
+    this.breed,
+    this.complains,
+    this.gender,
+    this.id,
+    required this.clientId,
+    this.name,
+    this.path,
+    this.qrCode,
+    this.pregnancyCycles,
+    this.vaccinations,
+    this.weight,
+    this.clientName,
+    this.doctorId,
+    this.knowBirthDay = true,
+    this.timeLine,
+    this.birthYear,
+
+    this.balance,
+    this.status,
+    this.addedDateTime
+  });
 
   Pet.fromJson(dynamic json) {
+    List<Complain> _complains = [];
 
-    List<Complain> _allComplainList = [];
-    List<Complain> _activeComplainList = [];
-    List<Complain> _completedComplainList = [];
-    List<Complain> _dismissedComplainList = [];
 
     if (json['complains'] != null) {
       Map<dynamic, dynamic> _map = json['complains'] as Map<dynamic, dynamic>;
-      if (_map['activeComplains'] != null) {
-        _map['activeComplains'].forEach(
-          (key, element) {
-            _activeComplainList.add(Complain.fromJson(element));
-          },
-        );
-      }
 
-      if (_map['completeComplains'] != null) {
-        _map['completeComplains'].forEach(
-          (key, element) {
-            _completedComplainList.add(Complain.fromJson(element));
-          },
-        );
-      }
-
-      if (_map['dismissedComplains'] != null) {
-        _map['dismissedComplains'].forEach(
-          (key, element) {
-            _dismissedComplainList.add(Complain.fromJson(element));
-          },
-        );
-      }
-
-      if (_map['allComplains'] != null) {
-        _map['allComplains'].forEach(
-          (key, element) {
-            _allComplainList.add(Complain.fromJson(element));
-          },
-        );
-      }
+      _map.forEach(
+            (key, element) {
+          _complains.add(Complain.fromJson(element));
+        },
+      );
     }
-allComplains = _allComplainList;
-    completeComplains = _completedComplainList;
-    dismissedComplains = _dismissedComplainList;
-    activeComplains = _activeComplainList;
+
+    complains = _complains;
+
+
+
 
     List<PregnancyCycle> _pregnancyCycleList = [];
     if (json['pregnancyCycles'] != null) {
@@ -139,54 +103,27 @@ allComplains = _allComplainList;
       );
     }
 
-    List<ImageModel> _imageModelList = [];
-    if (json['images'] != null) {
-      Map<dynamic, dynamic> _map = json['images'] as Map<dynamic, dynamic>;
+    List<TimeLineElement> _timeLineLementsList = [];
+    if (json['timeLine'] != null) {
+      Map<dynamic, dynamic> _map = json['timeLine'] as Map<dynamic, dynamic>;
 
       _map.forEach(
         (key, element) {
-          _imageModelList.add(ImageModel.fromJson(element));
+          _timeLineLementsList.add(TimeLineElement.fromJson(element));
         },
       );
     }
 
-    List<Vaccination> _allVaccinationList = [];
-    List<Vaccination> _calledVaccinationList = [];
-    List<Vaccination> _notCalledVaccinationList = [];
-    List<Vaccination> _dismissedVaccinationList = [];
+    List<Vaccination> _vaccinations = [];
 
     if (json['vaccinations'] != null) {
       Map<dynamic, dynamic> _map =
           json['vaccinations'] as Map<dynamic, dynamic>;
-      if (_map['allVaccinations'] != null) {
-        _map['allVaccinations'].forEach(
+      _map.forEach(
           (key, element) {
-            _allVaccinationList.add(Vaccination.fromJson(element));
-          },
-        );
+            _vaccinations.add(Vaccination.fromJson(element));
       }
-      if (_map['calledVaccinations'] != null) {
-        _map['calledVaccinations'].forEach(
-          (key, element) {
-            _calledVaccinationList.add(Vaccination.fromJson(element));
-          },
-        );
-      }
-      if (_map['notCalledVaccinations'] != null) {
-        _map['notCalledVaccinations'].forEach(
-          (key, element) {
-            _notCalledVaccinationList.add(Vaccination.fromJson(element));
-          },
-        );
-      }
-
-      if (_map['dismissedVaccinations'] != null) {
-        _map['dismissedVaccinations'].forEach(
-          (key, element) {
-            _allVaccinationList.add(Vaccination.fromJson(element));
-          },
-        );
-      }
+    );
     }
 
     List<Weight> _weightList = [];
@@ -212,16 +149,16 @@ allComplains = _allComplainList;
     qrCode = json['qrCode'];
     status = json['status'];
     pregnancyCycles = _pregnancyCycleList;
-    allVaccinations = _allVaccinationList;
+
     weight = _weightList;
-    images = _imageModelList;
+    timeLine = _timeLineLementsList;
 
     knowBirthDay = json['knowBirthDay'];
     clientName = json['clientName'];
     doctorId = json['doctorId'];
     addedDateTime = json['addedDateTime'];
     birthYear = json['birthYear'];
-
+vaccinations = _vaccinations;
   }
 
   Pet copyWith({
@@ -230,10 +167,8 @@ allComplains = _allComplainList;
     String? birthMonth,
     String? birthYear,
     String? breed,
-    List<Complain?>? allComplains,
-    List<Complain?>? activeComplains,
-    List<Complain?>? completeComplains,
-    List<Complain?>? dismissedComplains,
+    List<Complain?>? complains,
+
     String? gender,
     String? id,
     String? clientId,
@@ -247,22 +182,17 @@ allComplains = _allComplainList;
     String? status,
 
     List<PregnancyCycle?>? pregnancyCycles,
-    List<Vaccination?>? allVaccinations,
-    List<Vaccination?>? calledVaccinations,
-    List<Vaccination?>? notCalledVaccinations,
-    List<Vaccination?>? dismissedVaccinations,
+    List<Vaccination?>? vaccinations,
     List<Weight?>? weight,
-    List<ImageModel?>? images,
+    List<TimeLineElement?>? timeLineElementsList,
     int? addedDateTime,
   }) =>
       Pet(
         attention: attention ?? this.attention,
         birthDay: birthDay ?? this.birthDay,
         breed: breed ?? this.breed,
-        activeComplains: activeComplains ?? this.activeComplains,
-        completeComplains: completeComplains ?? this.completeComplains,
-        dismissedComplains: dismissedComplains ?? this.dismissedComplains,
-        allComplains: allComplains ?? this.allComplains,
+
+        complains: complains ?? this.complains,
         gender: gender ?? this.gender,
         qrCode: qrCode ?? this.qrCode,
         id: id ?? this.id,
@@ -272,16 +202,13 @@ allComplains = _allComplainList;
         knowBirthDay: knowBirthDay ?? knowBirthDay,
         pregnancyCycles: pregnancyCycles ?? this.pregnancyCycles,
         weight: weight ?? this.weight,
-        images: images ?? this.images,
+        timeLine: timeLineElementsList ?? this.timeLine,
         clientName: clientName ?? this.clientName,
         doctorId: doctorId ?? this.doctorId,
         balance: balance ?? this.balance,
         status: status ?? this.status,
         addedDateTime:  addedDateTime ?? this.addedDateTime,
-        notCalledVaccinations: notCalledVaccinations ?? this.notCalledVaccinations,
-        dismissedVaccinations: dismissedVaccinations ?? this.dismissedVaccinations,
-        calledVaccinations: calledVaccinations ?? this.calledVaccinations,
-        allVaccinations: allVaccinations ?? this.allVaccinations,
+        vaccinations: vaccinations ?? this.vaccinations,
         birthYear: birthYear ?? this.birthYear,
       );
 
@@ -308,68 +235,23 @@ allComplains = _allComplainList;
     Map<String, dynamic> complainDetailsMap = {};
     Map<String, dynamic> allVaccinationMap = {};
 
-    if (allVaccinations != null && allVaccinations!.isNotEmpty) {
-      for (var element in allVaccinations!) {
+    if (vaccinations != null && vaccinations!.isNotEmpty) {
+      for (var element in vaccinations!) {
         allVaccinationMap[element!.id!] = element.toJson();
       }
-      vaccinationDetailsMap['allVaccinations'] = allVaccinationMap;
+      vaccinationDetailsMap['vaccinations'] = allVaccinationMap;
     }
 
-    Map<String, dynamic> calledVaccinationMap = {};
-    if (calledVaccinations != null && calledVaccinations!.isNotEmpty) {
-      for (var element in calledVaccinations!) {
-        calledVaccinationMap[element!.id!] = element.toJson();
-      }
-      vaccinationDetailsMap['calledVaccinations'] = calledVaccinationMap;
-    }
-
-    Map<String, dynamic> notCalledVaccinationsMap = {};
-    if (notCalledVaccinations != null && notCalledVaccinations!.isNotEmpty) {
-      for (var element in notCalledVaccinations!) {
-        notCalledVaccinationsMap[element!.id!] = element.toJson();
-      }
-      vaccinationDetailsMap['notCalledVaccinations'] = notCalledVaccinationsMap;
-    }
-
-    Map<String, dynamic> dismissedVaccinationsMap = {};
-    if (dismissedVaccinations != null  && dismissedVaccinations!.isNotEmpty) {
-      for (var element in dismissedVaccinations!) {
-        dismissedVaccinationsMap[element!.id!] = element.toJson();
-      }
-      vaccinationDetailsMap['dismissedVaccinations'] = dismissedVaccinationsMap;
-    }
 
     Map<String, dynamic> allComplainsMap = {};
-    if (allComplains != null && allComplains!.isNotEmpty) {
-      for (var element in allComplains!) {
+    if (complains != null && complains!.isNotEmpty) {
+      for (var element in complains!) {
         allComplainsMap[element!.id!] = element.toJson();
       }
-      complainDetailsMap['allComplains'] = allComplainsMap;
+      complainDetailsMap['complains'] = allComplainsMap;
     }
 
-    Map<String, dynamic> completeComplainsMap = {};
-    if (completeComplains != null && completeComplains!.isNotEmpty) {
-      for (var element in completeComplains!) {
-        completeComplainsMap[element!.id!] = element.toJson();
-      }
-      complainDetailsMap['completeComplains'] = completeComplainsMap;
-    }
 
-    Map<String, dynamic> dismissedComplainsMap = {};
-    if (dismissedComplains != null && dismissedComplains!.isNotEmpty) {
-      for (var element in dismissedComplains!) {
-        dismissedComplainsMap[element!.id!] = element.toJson();
-      }
-      complainDetailsMap['dismissedComplains'] = dismissedComplainsMap;
-    }
-
-    Map<String, dynamic> activeComplainsMap = {};
-    if (activeComplains != null && activeComplains!.isNotEmpty) {
-      for (var element in activeComplains!) {
-        activeComplainsMap[element!.id!] = element.toJson();
-      }
-      complainDetailsMap['activeComplains'] = activeComplainsMap;
-    }
 
 map['complains'] = complainDetailsMap;
     map['vaccinations'] = vaccinationDetailsMap;
@@ -382,7 +264,7 @@ map['complains'] = complainDetailsMap;
 
   Widget getComplainSummery() {
     List<Widget> widgetLst = [];
-    for (var element in allComplains!) {
+    for (var element in complains!) {
       widgetLst.add(
         Column(
           children: [
@@ -401,7 +283,7 @@ map['complains'] = complainDetailsMap;
   }
 
   bool isProperlyVaccinated() {
-    List<Vaccination?>? vaccinationList =  allVaccinations;
+    List<Vaccination?>? vaccinationList =  vaccinations;
     if(vaccinationList!= null && vaccinationList.isNotEmpty){
       if(vaccinationList.length >1){
         vaccinationList.sort(

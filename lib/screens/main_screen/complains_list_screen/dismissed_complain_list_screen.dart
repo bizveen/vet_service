@@ -41,9 +41,10 @@ class _DismissedComplainListScreenState
                 return ListTile(
                   onTap: () async {
                     Get.to(ComplainDetailsScreen(
-                        complain: complain,
-                        client: await FirebaseDatabaseMethods()
-                            .getClientFromID(id : complain.clientID!), complainStatus: ComplainStatus.dismissed,));
+                        complainId: complain.id!,
+                        clientId: complain.clientID!,
+                      petId: complain.petId!,
+                      complainStatus: ComplainStatus.dismissed,));
                   },
                   title: Text(complain.getTitle()),
                 );

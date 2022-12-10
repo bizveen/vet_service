@@ -34,7 +34,7 @@ class _VaccinationCardWidget2State extends State<VaccinationCardWidget2> {
           viewVaccinationList(pet: widget.pet);
         },
         title: 'Vaccinations',
-        child:(widget.pet.allVaccinations!= null && widget.pet.allVaccinations!.isNotEmpty) ? Column(
+        child:(widget.pet.vaccinations!= null && widget.pet.vaccinations!.isNotEmpty) ? Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -53,10 +53,10 @@ class _VaccinationCardWidget2State extends State<VaccinationCardWidget2> {
                   children: [
                     Text(
                       dateFormatter.format(DateTime.fromMicrosecondsSinceEpoch(
-                          widget.pet.allVaccinations!.first!.givenDate!)),
+                          widget.pet.vaccinations!.first!.givenDate!)),
                       style: const TextStyle(fontSize: 11),
                     ),
-                    Text(widget.pet.allVaccinations!.first!.givenVaccine!.name!,
+                    Text(widget.pet.vaccinations!.first!.givenVaccine!.name!,
                         overflow: TextOverflow.ellipsis),
                     const Text(''),
                   ],
@@ -68,12 +68,12 @@ class _VaccinationCardWidget2State extends State<VaccinationCardWidget2> {
                       style: TextStyle(fontSize: 11),
                     ),
                     Text(
-                      widget.pet.allVaccinations!.last!.nextVaccination!,
+                      widget.pet.vaccinations!.last!.nextVaccination!,
                       overflow: TextOverflow.ellipsis,
                     ),
                     Text(
                       dateFormatter.format(DateTime.fromMicrosecondsSinceEpoch(
-                          widget.pet.allVaccinations!.last!.nextDate!)),
+                          widget.pet.vaccinations!.last!.nextDate!)),
                       style: const TextStyle(fontSize: 11),
                     ),
                   ],

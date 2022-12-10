@@ -158,7 +158,8 @@ child: Column(
          padding: const EdgeInsets.all(8.0),
          child: Stack(
            children: [
-             const CircleAvatar(backgroundImage: AssetImage('assets/petAvatar.jfif'),radius: 50, ),
+             const CircleAvatar(//backgroundImage: AssetImage('assets/petAvatar.jfif'),
+               radius: 50, ),
              Positioned(
                bottom: 0,
                  right: 0,
@@ -194,7 +195,7 @@ child: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Expanded(child: Text(pet.clientName!.toTitleCase!, style: Get.textTheme.headline6,)),
+                          //  Expanded(child: Text(.toTitleCase!, style: Get.textTheme.headline6,)),
                             TinySpace(),
                             IconButton(onPressed: (){
                               Get.to(ViewClientDetailsScreen(clientId: pet.clientId!, petId: pet.id,));}, icon:  Icon(Icons.arrow_circle_right_outlined, color: Get.theme.primaryColor,))

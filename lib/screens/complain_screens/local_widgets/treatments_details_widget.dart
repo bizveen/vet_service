@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import 'package:get/get.dart';
+import 'package:vet_service/resources/firebase_firestore_methods.dart';
 
 import '../../../models/complain/Complain.dart';
 import '../../../resources/database_object_paths/complain_paths.dart';
@@ -28,6 +29,7 @@ class TreatmentDetailsWidget extends StatelessWidget {
       treatmentList = List.generate(
         complain.treatmentList!.length,
         (index) => Slidable(
+          key: GlobalKey(debugLabel: complain.treatmentList![index]!.id!),
           startActionPane: ActionPane(
             motion: const ScrollMotion(),
             children: [
@@ -37,14 +39,7 @@ class TreatmentDetailsWidget extends StatelessWidget {
                 icon: Icons.delete,
                 label: 'Delete',
                 onPressed: (BuildContext context) {
-                  FirebaseDatabaseMethods().updateBatch(updateComplainSubJson(
-                      petId: complain.petId!,
-                      clientId: complain.clientID!,
-                      json: [{}],
-                      id: complain.treatmentList![index]!.id!,
-                      complainId: complain.id!,
-                      complainSub: ComplainSub.treatments,
-                      complainStatus: ComplainStatus.active));
+
                 },
               ),
             ],

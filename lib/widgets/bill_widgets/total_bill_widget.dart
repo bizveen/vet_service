@@ -49,27 +49,7 @@ class _TotalBillWidgetsState extends State<TotalBillWidgets> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Container(
-                        color : Get.theme.primaryColor,
-                        child: Align(
-                          alignment: Alignment.centerRight,
-                          child: Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-
-                                Text('Total', style: Get.textTheme.bodySmall!.copyWith(color: Get.theme.colorScheme.onPrimary),),
-                               TinySpace(),
-                                Text('Rs.${sale.getTotalCharges().toStringAsFixed(2)}',
-                                    style: Get.textTheme.headline5!.copyWith(color: Get.theme.colorScheme.onPrimary)),
-                               TinySpace(),
-                                Icon(Icons.arrow_circle_right_outlined, color: Get.theme.backgroundColor,),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
+                      BillLine(value: sale.getTotalCharges().toStringAsFixed(2)),
                       sale.inventoryOutList != null ? ProductBillWidget(sale: sale) : Container(),
                       sale.vaccineList != null ? VaccinesBillWidget(sale: sale) : Container(),
                       sale.treatmentList != null ? TreatmentBillWidget(sale: sale,) : Container(),
@@ -80,6 +60,42 @@ class _TotalBillWidgetsState extends State<TotalBillWidgets> {
             ),
           );
         }
+      ),
+    );
+  }
+}
+
+class BillLine extends StatelessWidget {
+   BillLine({
+    Key? key,
+    required this.value,
+    this.label = "Total",
+  }) : super(key: key);
+
+  final String value;
+  String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color : Get.theme.primaryColor,
+      child: Align(
+        alignment: Alignment.centerRight,
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+
+              Text(label, style: Get.textTheme.bodySmall!.copyWith(color: Get.theme.colorScheme.onPrimary),),
+             TinySpace(),
+              Text('Rs.${value}',
+                  style: Get.textTheme.headline5!.copyWith(color: Get.theme.colorScheme.onPrimary)),
+             TinySpace(),
+              Icon(Icons.arrow_circle_right_outlined, color: Get.theme.backgroundColor,),
+            ],
+          ),
+        ),
       ),
     );
   }

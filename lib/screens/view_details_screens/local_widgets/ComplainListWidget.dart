@@ -60,22 +60,22 @@ class ComplainListWidget extends StatelessWidget {
 
           ListView.builder(
               shrinkWrap: true,
-              itemCount: pet.allComplains!.length,
+              itemCount: pet.complains!.length,
 
               itemBuilder: (context, index) {
                 return InkWell(
                   onTap: ()async {
                     Get.to(ComplainDetailsScreen(
-                        complain: pet.allComplains![index]!,
-                        client: await FirebaseDatabaseMethods().getClientFromID(id: pet.clientId!),
-                        complainStatus: ComplainStatus.all));
+                        complainId: pet.complains![index]!.id!,
+                        clientId: pet.clientId!,
+                        complainStatus: ComplainStatus.all, petId: pet.id!,));
                   },
                   child: Padding(
 
                     padding: const EdgeInsets.all(4.0),
 
                     child: Text(
-                      pet.allComplains![index]!.getTitle(withPetName: false),
+                      pet.complains![index]!.getTitle(withPetName: false),
                       style: Get.textTheme.headline5,),
 
                   ),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
+import 'package:vet_service/resources/firebase_firestore_methods.dart';
 
 import '../../../constants.dart';
 import '../../../models/Pet.dart';
@@ -102,7 +103,7 @@ class _AddVaccinationScreenState extends State<AddVaccinationScreen> {
                     onPressed: () async {
                       String id = const Uuid().v1();
                       Vaccination vaccination = Vaccination(
-                        vaccinationStatus: VaccinationStatus.notCalled.index,
+                          vaccinationStatus: VaccinationStatus.notCalled.index,
                           clientId: widget.pet.clientId,
                           petId: widget.pet.id,
                           givenDate: givenDate!.microsecondsSinceEpoch,
@@ -121,45 +122,38 @@ class _AddVaccinationScreenState extends State<AddVaccinationScreen> {
                         vaccinationId: vaccination.id,
                         vaccinationPath: vaccination.path,
                         comment:
-                            '${widget.pet.name ?? 'Pet'} - ${vaccination.givenVaccine!.name?? 'No Name'}',
+                            '${widget.pet.name ?? 'Pet'} - ${vaccination.givenVaccine!.name ?? 'No Name'}',
                         addedBy: FirebaseAuth.instance.currentUser!.email,
                         path: '$doctorPath/logs/$logId',
                         isACall: false,
                       );
 
+                      await FirebaseFirestoreMethods()
+                          .firestore
+                          .collection('clients')
+                          .doc(widget.pet.clientId)
+                          .update({
+                        'pets.${widget.pet.id}.vaccinations.${vaccination.id}':
+                            vaccination.toJson()
+                      });
+
                       if (_image != null) {
                         FirebaseStorageMethods().uploadImageToStorage(
-                            oneImage: true,
-                            title: 'Vaccination Image',
-                            addressPaths: vaccinationPaths(
-                                    vaccinationStatus:
-                                        VaccinationStatus.notCalled,
-                                    clientId: widget.pet.clientId!,
-                                    petId: widget.pet.id!)
-                                .map((e) => '$e/${vaccination.id}')
-                                .toList(),
-                            file: _image!,
-                            folderPath: '${widget.pet.path}/vaccinations/$id');
+                          oneImage: true,
+                          title: 'Vaccination Image',
+                          clientId: widget.pet.clientId!,
+                          petId: widget.pet.id!,
+                          fileType: FileType.vaccinationImage,
+                          vaccinationId: vaccination.id,
+                          file: _image!,
+                        );
                       }
 
-                      await FirebaseDatabaseMethods()
-                          .updateBatch(addVaccinationJson(
-                        vaccinationStatus: VaccinationStatus.notCalled,
-                        petId: widget.pet.id!,
-                        clientId: widget.pet.clientId!,
-                        json: [vaccination.toJson()],
-                        vaccinationId: vaccination.id!,
-                      ));
-                          await FirebaseDatabaseMethods()
-                          .updateBatch(
-                          updateLogJson(log: log, clientId: vaccination.clientId!,
-                              logType: LogType.vaccination, json: [log.toJson()],
-                              petId: widget.pet.id, vaccinationId: vaccination.id));
                       await SalesMethods(
                         clientStatus: ClientStatus.real,
-                              clientId: widget.pet.clientId!,
-                              vaccination: vaccination, )
-                          .createASale();
+                        clientId: widget.pet.clientId!,
+                        vaccination: vaccination,
+                      ).createASale();
                       Get.back();
                     },
                     child: const Text('Save')),

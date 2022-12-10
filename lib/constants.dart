@@ -4,7 +4,7 @@ import 'package:get_storage/get_storage.dart';
 import 'controllers/global_live_variables_controller.dart';
 
 String examinationCategoriesPath =
-    'users/${Get.find<GlobalLiveVariablesController>().currentDoctor.value}/examinationSigns';
+    '$doctorPath/examinationSigns';
 String doctorPath =
     'users/$doctorId';
 String doctorId = GetStorage().read('doctorId');

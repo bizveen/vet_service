@@ -40,7 +40,11 @@ class _PetListScreenState extends State<PetListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text('Pets'), actions: [
+
+        appBar: AppBar(title: const Text('Pets')
+            ,
+
+            actions: [
 
           IconButton(
               onPressed: () {

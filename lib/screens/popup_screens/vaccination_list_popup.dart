@@ -11,9 +11,9 @@ import '../vaccination_screens/add_vaccination_screen/add_vaccination_screen.dar
 import '../vaccination_screens/view_vaccination_details_screen.dart';
 
 viewVaccinationList({required Pet pet}){
-  pet.allVaccinations!.sort((a, b) => b!.givenDate! - a!.givenDate!,);
+  pet.vaccinations!.sort((a, b) => b!.givenDate! - a!.givenDate!,);
   Get.defaultDialog(
-      title: 'Vaccination Records (${pet.allVaccinations!.length})',
+      title: 'Vaccination Records (${pet.vaccinations!.length})',
 onConfirm: (){
         Get.back();
 },
@@ -32,7 +32,7 @@ onConfirm: (){
 
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              children: pet.allVaccinations!.map((e) =>
+              children: pet.vaccinations!.map((e) =>
                   PetRecordCardWidget(
                     title: e!.givenVaccine!.name!,
                     leading:

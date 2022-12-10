@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:uuid/uuid.dart';
+import 'package:vet_service/resources/firebase_storage_methods.dart';
 
 /// downloadUrl : ""
 /// id : ""
@@ -16,6 +17,7 @@ class ImageModel {
     this.title,
     this.date,
      this.image,
+    required this.fileType
   });
 
   ImageModel.fromJson(dynamic json) {
@@ -29,8 +31,11 @@ class ImageModel {
     storagePath = json['storagePath'];
     title = json['title'];
     date = json['date'];
+    fileType = json['fileType'];
+
   }
   String? downloadUrl;
+  int? fileType;
   String? id;
   List<String?>? paths;
   String? storagePath;
@@ -39,6 +44,7 @@ class ImageModel {
   Uint8List? image;
 ImageModel copyWith({  String? downloadUrl,
   String? id,
+  int? fileType,
   List<String?>? paths,
   String? storagePath,
   String? title,
@@ -49,6 +55,7 @@ ImageModel copyWith({  String? downloadUrl,
   storagePath: storagePath ?? this.storagePath,
   date: date ?? this.date,
   title: title ?? this.title,
+  fileType:  fileType ?? this.fileType
 );
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -63,6 +70,8 @@ ImageModel copyWith({  String? downloadUrl,
     map['storagePath'] = storagePath;
     map['title'] = title;
     map['date'] = date;
+    map['fileType'] = fileType;
+
 
 
     return map;

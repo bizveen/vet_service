@@ -48,7 +48,7 @@ import '../../../../resources/firebase_database_methods.dart';
                 listItems.add(Vaccines.fromJson(child.value as Map<dynamic,dynamic>));
               }
             }
-            return GFSearchBar<Vaccines>(
+            return GFSearchBar<Vaccines?>(
 
 
 
@@ -71,7 +71,7 @@ import '../../../../resources/firebase_database_methods.dart';
                 return Container(
                   padding: const EdgeInsets.all(8),
                   child: Text(
-                    item.name.toString(),
+                    item!.name.toString(),
                     style: const TextStyle(fontSize: 18),
                   ),
                 );
@@ -81,19 +81,19 @@ import '../../../../resources/firebase_database_methods.dart';
                   selectedValue = item;
                 });
 
-                widget.onSelect(item);
+                widget.onSelect(item!);
               },
             );
           });
     }
 
-    List<Vaccines> filterMethod(searchText) {
-      List<Vaccines> filteredList = [];
-      List<Vaccines> tempList = listItems;
+    List<Vaccines?> filterMethod(searchText) {
+      List<Vaccines?> filteredList = [];
+      List<Vaccines?> tempList = listItems;
       List<String> subWords = searchText.split(' ');
       for (int i = 0; i < subWords.length; i++) {
         tempList = tempList
-            .where((element) => element.name
+            .where((element) => element!.name
             .toString()
             .toLowerCase()
             .contains(subWords[i].toLowerCase()))

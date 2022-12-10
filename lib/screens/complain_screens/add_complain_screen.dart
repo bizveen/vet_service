@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:string_extensions/string_extensions.dart';
 import 'package:uuid/uuid.dart';
+import 'package:vet_service/resources/firebase_firestore_methods.dart';
 
 import '../../../constants.dart';
 import '../../../constants.dart';
@@ -26,6 +27,7 @@ import '../../utils/utils.dart';
 import '../../widgets/container_with_border.dart';
 import '../../widgets/drop_down_list_from_databse_widget_multi_select.dart';
 import '../../widgets/text_field_x.dart';
+import 'local_widgets/first_inspection_organ_system_input_widget.dart';
 import 'local_widgets/first_inspection_select_widget.dart';
 
 class AddComplainScreen extends StatefulWidget {
@@ -101,14 +103,14 @@ ElevatedButton(onPressed: () async {
         Expanded(
         child: SingleChildScrollView(
           child: Column(
-                children:[]
-                // widget.firstInspectionMap.keys.map((e) {
-                //   return FirstInspectionOrganSystemInputWidget(
-                //       inspectionMap:widget.firstInspectionMap[e] , title: e,result: (result){
-                //        organSystemList!.add(result);
-                //
-                //   },);
-                // }).toList()
+                children:
+                widget.firstInspectionMap.keys.map((e) {
+                  return FirstInspectionOrganSystemInputWidget(
+                      inspectionMap:widget.firstInspectionMap[e] , title: e,result: (result){
+                       organSystemList!.add(result);
+
+                  },);
+                }).toList()
               ),
 
         ),
@@ -169,23 +171,11 @@ ElevatedButton(onPressed: () async {
                     // });
 
 
+                    await FirebaseFirestoreMethods().firestore.collection('clients').doc(widget.pet.clientId).update(
+                        {
+                          'pets.${widget.pet.id}.complains.${complainId}' : complain.toJson()
+                        });
 
-                    await FirebaseDatabaseMethods().updateBatch(
-                        addComplainJson(
-                            petId: widget.pet.id!,
-                            clientId: widget.pet.clientId!,
-                            json: [complain.toJson()],
-                            complainId: complain.id!,
-                            complainStatus: ComplainStatus.active));
-
-                    await FirebaseDatabaseMethods().updateBatch(updateLogJson(
-                      clientId: complain.clientID!,
-                      logType: LogType.complain,
-                      petId: complain.petId,
-                      json: [log.toJson()],
-                      complainId: complain.id!,
-                      log: log
-                    ));
                     Get.back();
                   },
                   child: const Text('Save')),
