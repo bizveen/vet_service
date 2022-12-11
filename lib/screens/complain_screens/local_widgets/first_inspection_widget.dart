@@ -35,7 +35,7 @@ class _FirstInspectionWidgetState extends State<FirstInspectionWidget> {
         query: FirebaseDatabaseMethods().reference(
             path: '$examinationCategoriesPath/'
         ), itemBuilder: ( context, snapshot) {
-          FirstInspection firstInspection = FirstInspection.fromJson(snapshot.value);
+          Inspection firstInspection = Inspection.fromJson(snapshot.value);
           print(firstInspection.organSystemInspectionsList);
         return ExaminationValuesWidget(system: snapshot.key! , tableLength: snapshot.children.length,);
       },

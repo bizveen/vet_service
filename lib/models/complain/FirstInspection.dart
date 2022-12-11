@@ -6,14 +6,14 @@ import 'OrganSystemInspections.dart';
 /// staffMember : "fdfdfs"
 /// temperature : 102.5
 
-class FirstInspection {
+class Inspection {
   String? id;
   List<OrganSystemInspections?>? organSystemInspectionsList;
   String? path;
   String? staffMember;
   String? temperature;
 
-  FirstInspection({
+  Inspection({
     this.id,
     this.organSystemInspectionsList,
     this.path,
@@ -21,7 +21,7 @@ class FirstInspection {
     this.temperature,
   });
 
-  FirstInspection.fromJson(dynamic json) {
+  Inspection.fromJson(dynamic json) {
     id = json['id'];
     List<OrganSystemInspections> _organSystemsList = [];
     if (json['organSystemInspections'] != null) {
@@ -41,14 +41,14 @@ class FirstInspection {
     temperature = json['temperature'];
   }
 
-  FirstInspection copyWith({
+  Inspection copyWith({
     String? id,
     List<OrganSystemInspections?>? organSystemList,
     String? path,
     String? staffMember,
     String? temperature,
   }) =>
-      FirstInspection(
+      Inspection(
         id: id ?? this.id,
         organSystemInspectionsList:
             organSystemList ?? this.organSystemInspectionsList,

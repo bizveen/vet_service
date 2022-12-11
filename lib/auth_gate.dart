@@ -5,6 +5,7 @@ import 'package:flutterfire_ui/database.dart';
 import 'package:get/get.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:vet_service/screens/main_screen/main_screen.dart';
 
 import 'resources/firebase_database_methods.dart';
 import 'screens/authentication_screens/sign_in_screen/sign_in_screen.dart';
@@ -51,7 +52,7 @@ class AuthGate extends StatelessWidget {
                     box.write('isAdmin', userProfileMap['isAdmin'] as bool);
 
                     return userProfileMap['doctorId'] != null
-                        ? const PetListScreen()
+                        ?  MainScreen()
                         : Scaffold(
                             body: Center(
                                 child: Column(
@@ -86,7 +87,7 @@ class AuthGate extends StatelessWidget {
                     );
                   }
                 });} else{
-              return const PetListScreen();
+              return  MainScreen();
             }
           } else {
             return SignInScreenView();

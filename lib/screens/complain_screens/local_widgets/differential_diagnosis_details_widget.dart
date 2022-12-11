@@ -60,7 +60,7 @@ class _DiffrentialDiagnosisDetailsWidgetState
               return SizedBox(
                 key: ValueKey(
                     widget.complain.differentialDiagnosisList![index]!.id!),
-                height: 200,
+                height: 50,
                 child: ListTile(
 
 
@@ -115,6 +115,7 @@ class _DiffrentialDiagnosisDetailsWidgetState
         String id = const Uuid().v1();
         Get.defaultDialog(
             onConfirm: () async {
+
               DifferentialDiagnosis differentialDiagnosis =
                   DifferentialDiagnosis(
                 path: '${widget.complain.path}/differentialDiagnosis/$id',

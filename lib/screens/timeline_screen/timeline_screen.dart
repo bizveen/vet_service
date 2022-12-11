@@ -18,14 +18,11 @@ import 'package:vet_service/models/client_model.dart';
 import 'package:vet_service/resources/firebase_firestore_methods.dart';
 import 'package:vet_service/resources/firebase_storage_methods.dart';
 
-import '../models/Image_model.dart';
-import '../models/Pet.dart';
-import '../models/TimeLineElement.dart';
-import '../models/complain/Complain.dart';
-import '../resources/database_object_paths/time_line_paths.dart';
-import '../resources/firebase_database_methods.dart';
-import '../utils/image_picker.dart';
-import '../utils/utils.dart';
+import '../../models/Pet.dart';
+import '../../models/TimeLineElement.dart';
+import '../../models/complain/Complain.dart';
+import '../../utils/utils.dart';
+
 
 class TimelineScreen extends GetWidget<ClientController> {
   String clientId;

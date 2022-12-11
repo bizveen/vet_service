@@ -120,7 +120,7 @@ ElevatedButton(onPressed: () async {
             children: [
               ElevatedButton(
                   onPressed: () async {
-                    FirstInspection firstInspection = FirstInspection(
+                    Inspection firstInspection = Inspection(
                       path:
                           '${widget.pet.path}/complains/$complainId/firstInspection',
                       organSystemInspectionsList: organSystemList,

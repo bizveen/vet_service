@@ -11,7 +11,7 @@ import '../../models/complain/Complain.dart';
 import '../../resources/database_object_paths/complain_paths.dart';
 import '../../resources/database_object_paths/log_paths.dart';
 import '../../resources/firebase_database_methods.dart';
-import '../../timeline_screen/timeline_screen.dart';
+
 import '../../utils/add_log_screen.dart';
 import '../../utils/tiny_space.dart';
 import '../../utils/utils.dart';
@@ -22,6 +22,7 @@ import '../../widgets/log_tile.dart';
 import '../../widgets/logs_widget.dart';
 import '../add_treatment_screen/add_treatment_screen.dart';
 import '../calling_screen/calling_screen.dart';
+import '../timeline_screen/timeline_screen.dart';
 import 'add_complain_screen.dart';
 
 import 'local_widgets/differential_diagnosis_details_widget.dart';

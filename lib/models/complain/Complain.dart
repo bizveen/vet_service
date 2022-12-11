@@ -33,7 +33,8 @@ import 'Treatment.dart';
 /// treatment : {"charges":514545,"dateTime":5454545,"diagnosisDeviations":{"disease":{"id":"fgfg","path":"sdfsdf"}},"drug":{"comment":"dfsds","doze":"vxcv","id":"dfsdf","name":"Amox","path":"dsfsd"},"id":"dfdsf","nextTreatnebtDateTime":454545,"path":"fdsdsd"}
 
 class Complain {
-  FirstInspection? firstInspection;
+  Inspection? firstInspection;
+  List<Inspection?>? inspections;
   List<DifferentialDiagnosis?>? differentialDiagnosisList;
 
   String? clientID;
@@ -62,6 +63,7 @@ String ? comment;
       this.nextComingDate,
       this.id,
       this.logList,
+        this.inspections,
       this.path,
       this.startedDateTime,
       this.status,
@@ -77,26 +79,25 @@ String ? comment;
       });
 
   Complain.fromJson(dynamic json) {
-    List<DifferentialDiagnosis> _differentialDiagnosisList = [];
-    //differentialDiagnosis
-    //differentialDiagnosis
-    print(json['differentialDiagnosis']);
+    
+    List<DifferentialDiagnosis> differentialDiagnosisList = [];
+
     if (json['differentialDiagnosis'] != null) {
       Map<dynamic, dynamic> _map =
           json['differentialDiagnosis'] as Map<dynamic, dynamic>;
 
       _map.forEach(
         (key, element) {
-          _differentialDiagnosisList
+          differentialDiagnosisList
               .add(DifferentialDiagnosis.fromJson(element));
         },
       );
-      if (_differentialDiagnosisList.length > 1) {
-        _differentialDiagnosisList.sort((a, b) {
+      if (differentialDiagnosisList.length > 1) {
+        differentialDiagnosisList.sort((a, b) {
           return ((a.order ?? 0) - (b.order ?? 0));
         });
       }
-      differentialDiagnosisList = _differentialDiagnosisList;
+      differentialDiagnosisList = differentialDiagnosisList;
     }
 
     List<TestReports> _testReportsList = [];
@@ -147,14 +148,14 @@ String ? comment;
     status = json['status'];
     comment = json['comment'];
     firstInspection = json['firstInspection'] != null
-        ? FirstInspection.fromJson(json['firstInspection'])
+        ? Inspection.fromJson(json['firstInspection'])
         : null;
     weight = json['weight'] != null ? Weight.fromJson(json['weight']) : null;
     // client = json['client'] != null ? ClientModel.fromJson(json['client']) : null;
   }
 
   Complain copyWith({
-    FirstInspection? firstInspection,
+    Inspection? firstInspection,
     List<DifferentialDiagnosis?>? differentialDiagnosisList,
     String? id,
     Weight? weight,
@@ -316,6 +317,9 @@ String ? comment;
   }
 
   Widget getTreatmentSummery() {
+    if(treatmentList!=null){
+      treatmentList!.sort((b, a) => a!.dateTime!.compareTo(b!.dateTime!));
+    }
     return treatmentList != null
         ? Padding(
             padding: const EdgeInsets.all(8.0),

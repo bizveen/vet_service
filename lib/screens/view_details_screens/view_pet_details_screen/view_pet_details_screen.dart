@@ -1,18 +1,16 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutterfire_ui/database.dart';
+
 import 'package:get/get.dart';
 import 'package:string_extensions/string_extensions.dart';
 import 'package:vet_service/controllers/client_controller.dart';
 
 import '../../../models/Pet.dart';
 import '../../../models/client_model.dart';
-import '../../../resources/firebase_database_methods.dart';
-import '../../../timeline_screen/timeline_screen.dart';
-import '../../../utils/tiny_space.dart';
-import '../../../utils/utils.dart';
+
 import '../../edit_screens/edit_pet_details_screen.dart';
+import '../../timeline_screen/timeline_screen.dart';
 import 'local_widgets/complain_card_widget.dart';
 import 'local_widgets/pet_header_card_widget.dart';
 import 'local_widgets/vaccination_card_widget.dart';
