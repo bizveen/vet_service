@@ -68,7 +68,7 @@ class _VaccinationCardWidget2State extends State<VaccinationCardWidget2> {
                       style: TextStyle(fontSize: 11),
                     ),
                     Text(
-                      widget.pet.vaccinations!.last!.nextVaccination!,
+                      widget.pet.vaccinations!.last!.nextVaccine!,
                       overflow: TextOverflow.ellipsis,
                     ),
                     Text(

@@ -119,7 +119,7 @@ defaultVerticalAlignment: TableCellVerticalAlignment.middle
                         TableRow(
                             children: [
                               Text('Next Vaccination'),
-                              Text(vaccination.nextVaccination!),
+                              Text(vaccination.nextVaccine!),
                             ]
                         ),
 

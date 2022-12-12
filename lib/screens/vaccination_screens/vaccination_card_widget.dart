@@ -68,7 +68,7 @@ class VaccinationCardWidget extends StatelessWidget {
                     vaccination.nextDate!
                         .toString())))),
             TinySpace(),
-            Text((vaccination.nextVaccination ??
+            Text((vaccination.nextVaccine ??
                 'Not Selected')),
           ],
         ),

@@ -61,8 +61,10 @@ class _MainScreenState extends State<MainScreen> {
                   border: Border(
                       top: BorderSide(width: 1, color: Colors.grey[400]!))),
               child: TabBar(
-                onTap: (int){
-                  setState((){});
+                onTap: (val){
+                  setState((){
+                    pageController.jumpToPage(val);
+                  });
                 },
                 indicator: BoxDecoration(
                     //color: activeCyanColor.withOpacity(0.05),

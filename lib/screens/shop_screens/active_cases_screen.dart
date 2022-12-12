@@ -31,7 +31,7 @@ class _ActiveCasesScreenState extends State<ActiveCasesScreen> {
       appBar: AppBar(title: Text("Active Cases Screen"),),
       body:   FirebaseDatabaseQueryBuilder(
           query: FirebaseDatabaseMethods()
-              .reference(path: 'sales')
+              .reference(path: '$doctorPath/sales/all')
               .orderByChild('isActive')
               .equalTo(true),
           builder: (context, snapshot, _) {

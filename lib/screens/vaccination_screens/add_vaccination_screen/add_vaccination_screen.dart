@@ -108,7 +108,7 @@ class _AddVaccinationScreenState extends State<AddVaccinationScreen> {
                           petId: widget.pet.id,
                           givenDate: givenDate!.microsecondsSinceEpoch,
                           nextDate: nextDate!.microsecondsSinceEpoch,
-                          nextVaccination: nextVaccine,
+                          nextVaccine: nextVaccine,
                           nextArvDate: nextARV!.microsecondsSinceEpoch,
                           id: id,
                           givenVaccine: givenVaccine,

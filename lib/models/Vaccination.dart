@@ -24,7 +24,7 @@ class Vaccination {
     this.id,
     this.nextArvDate,
     this.nextDate,
-    this.nextVaccination,
+    this.nextVaccine,
     this.path,
     this.givenVaccine,
     this.images,
@@ -45,7 +45,7 @@ class Vaccination {
     id = json['id'];
     nextArvDate = json['nextArvDate'];
     nextDate = json['nextDate'] as int;
-    nextVaccination = json['nextVaccination'];
+    nextVaccine = json['nextVaccine'];
     path = json['path'];
     petId = json['petId'];
     clientId = json['clientId'];
@@ -90,7 +90,7 @@ images = _imageModelList;
 
   int? nextArvDate;
   int? nextDate;
-  String? nextVaccination;
+  String? nextVaccine;
 
   List<ImageModel?>? images;
   String? path;
@@ -109,7 +109,7 @@ images = _imageModelList;
     int? nextDate,
     String? petId,
     String? clientId,
-    String? nextVaccination,
+    String? nextVaccine,
     List<ImageModel?>? images,
     String? path,
     String? reminderStatus,
@@ -128,7 +128,7 @@ images = _imageModelList;
         images: images ?? this.images,
         petId: petId ?? this.petId,
         clientId: clientId ?? this.clientId,
-        nextVaccination: nextVaccination ?? this.nextVaccination,
+        nextVaccine: nextVaccine ?? this.nextVaccine,
         path: path ?? this.path,
         reminderStatus: reminderStatus ?? this.reminderStatus,
         givenVaccine: givenVacccine ?? givenVaccine,
@@ -146,7 +146,7 @@ images = _imageModelList;
     map['clientId'] = clientId.toString();
     map['nextArvDate'] = nextArvDate;
     map['nextDate'] = nextDate;
-    map['nextVaccination'] = nextVaccination;
+    map['nextVaccine'] = nextVaccine;
     map['reminderStatus'] = reminderStatus;
     map['vaccinationStatus'] = vaccinationStatus;
     map['oldVaccination'] = oldVaccination;
