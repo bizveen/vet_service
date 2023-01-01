@@ -6,12 +6,12 @@ import 'package:uuid/uuid.dart';
 import '../../../models/complain/OrganSystemInspections.dart';
 import '../../../models/complain/organ_system_inspections_result.dart';
 
-class FirstInspectionOrganSystemInputWidget extends StatefulWidget {
+class InspectionOrganSystemInputWidget extends StatefulWidget {
   Map<dynamic, dynamic> inspectionMap;
   String title;
   Function(OrganSystemInspections) result;
 
-  FirstInspectionOrganSystemInputWidget(
+  InspectionOrganSystemInputWidget(
       {Key? key,
       required this.inspectionMap,
       required this.title,
@@ -19,12 +19,12 @@ class FirstInspectionOrganSystemInputWidget extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<FirstInspectionOrganSystemInputWidget> createState() =>
-      _FirstInspectionOrganSystemInputWidgetState();
+  State<InspectionOrganSystemInputWidget> createState() =>
+      _InspectionOrganSystemInputWidgetState();
 }
 
-class _FirstInspectionOrganSystemInputWidgetState
-    extends State<FirstInspectionOrganSystemInputWidget> {
+class _InspectionOrganSystemInputWidgetState
+    extends State<InspectionOrganSystemInputWidget> {
   late List<OrganSystemInspectionsResult> resultsList = [];
   late List<TextEditingController> commentControllers;
   late OrganSystemInspections organSystemInspections;

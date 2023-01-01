@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
+import 'package:vet_service/controllers/client_controller.dart';
 import 'package:vet_service/resources/firebase_firestore_methods.dart';
 
 import '../../../constants.dart';
@@ -26,10 +27,11 @@ import 'local_widgets/search_vaccine_widget.dart';
 
 class AddVaccinationScreen extends StatefulWidget {
   Pet pet;
-
+  bool isClientActive;
   AddVaccinationScreen({
     Key? key,
     required this.pet,
+    required this.isClientActive,
   }) : super(key: key);
 
   @override
@@ -49,6 +51,7 @@ class _AddVaccinationScreenState extends State<AddVaccinationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.isClientActive);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Vaccination'),
@@ -101,7 +104,8 @@ class _AddVaccinationScreenState extends State<AddVaccinationScreen> {
               children: [
                 ElevatedButton(
                     onPressed: () async {
-                      String id = const Uuid().v1();
+                    //  ClientModel client = await FirebaseFirestoreMethods().getClientFromFirestore(clientId: widget.pet.id!);
+                    String id = const Uuid().v1();
                       Vaccination vaccination = Vaccination(
                           vaccinationStatus: VaccinationStatus.notCalled.index,
                           clientId: widget.pet.clientId,
@@ -129,13 +133,15 @@ class _AddVaccinationScreenState extends State<AddVaccinationScreen> {
                       );
 
                       await FirebaseFirestoreMethods()
-                          .firestore
-                          .collection('clients')
-                          .doc(widget.pet.clientId)
-                          .update({
-                        'pets.${widget.pet.id}.vaccinations.${vaccination.id}':
-                            vaccination.toJson()
-                      });
+                            .firestore
+                            .collection('clients')
+                            .doc(widget.pet.clientId)
+                            .update({
+                          'pets.${widget.pet.id}.vaccinations.${vaccination.id}':
+                          vaccination.toJson(),
+ });
+
+
 
                       if (_image != null) {
                         FirebaseStorageMethods().uploadImageToStorage(
@@ -149,11 +155,11 @@ class _AddVaccinationScreenState extends State<AddVaccinationScreen> {
                         );
                       }
 
-                      await SalesMethods(
-                        clientStatus: ClientStatus.real,
-                        clientId: widget.pet.clientId!,
-                        vaccination: vaccination,
-                      ).createASale();
+                      // await SalesMethods(
+                      //   clientStatus: ClientStatus.real,
+                      //   clientId: widget.pet.clientId!,
+                      //   vaccination: vaccination,
+                      // ).createASale();
                       Get.back();
                     },
                     child: const Text('Save')),

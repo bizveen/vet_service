@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/database.dart';
 import 'package:get/get.dart';
 import 'package:vet_service/models/Contact.dart';
-
+import 'package:firebase_database/firebase_database.dart';
 import '../../constants.dart';
 import '../../models/client_model.dart';
 import '../../resources/firebase_database_methods.dart';
@@ -50,9 +50,10 @@ class _ClientSearchScreenState extends State<ClientSearchScreen> {
         children: [
 
           TextFormField(
-            decoration: const InputDecoration(hintText: "Search by Name"),
+            decoration: const InputDecoration(hintText: "Search"),
             controller: clientSearchController,
             onChanged: (value){
+              search = value;
               if(value.isNum){
                 setState(() {
                   contactNoSearch=true;
@@ -77,17 +78,20 @@ class _ClientSearchScreenState extends State<ClientSearchScreen> {
             child:
             contactNoSearch ?
             FirebaseDatabaseListView(
-                query: FirebaseDatabaseMethods().reference(path: contactPath).orderByChild('contactNumber').startAt("[a-zA-Z0-9]*").endAt(search),
+                query: FirebaseDatabaseMethods().reference(path: '$doctorPath/contactNumbersList').orderByChild('contactNumber').startAt(search).endAt('$search\uf8ff'),
                 shrinkWrap: true,
                 itemBuilder: (context, snapshot){
+
                   Contact contact = Contact.fromJson(snapshot.value );
                   return ListTile(title: Text(contact.contactNumber ?? "No Number"), subtitle: Text(contact.clientName!),);
                 }) :
             clientNameSearch ?  FirebaseDatabaseListView(
                 query: FirebaseDatabaseMethods().reference(path: clientNamePath).orderByChild('clientName').startAt(search.toLowerCase()).endAt('${search.toLowerCase()}\uf8ff'),
                 shrinkWrap: true,
+
                 itemBuilder: (context, snapshot){
                   ClientModel client = ClientModel.fromJson(snapshot.value);
+                  print(client.toJson());
                   return ClientCard(client: client);
                 }) :
             FirebaseDatabaseListView(

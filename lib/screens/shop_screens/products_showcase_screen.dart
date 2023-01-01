@@ -7,7 +7,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../constants.dart';
 import '../../models/client_model.dart';
-import '../../models/sale/Sale.dart';
+import '../../models/sale/Invoice.dart';
 import '../../models/sale/inventory_in.dart';
 import '../../models/sale/inventory_out.dart';
 import '../../resources/database_object_paths/other_paths.dart';
@@ -47,7 +47,7 @@ class _ProductShowCaseScreenState extends State<ProductShowCaseScreen>
 
   Future<bool> myInterceptor(
       bool stopDefaultButtonEvent, RouteInfo info) async {
-    Sale sale = await FirebaseDatabaseMethods()
+    Invoice sale = await FirebaseDatabaseMethods()
         .getSaleFromID(widget.clientModel!.currentActiveCaseId!);
 
     if (sale.getTotalCharges().isEqual(0)) {
@@ -145,7 +145,7 @@ class _ProductShowCaseScreenState extends State<ProductShowCaseScreen>
                               alignment: Alignment.bottomCenter,
                               child: TotalBillWidgets(
                                 clientStatus: widget.clientStatus,
-                                saleId:
+                                invoiceId:
                                     widget.clientModel!.currentActiveCaseId!,
                               ))))
                   : Container()

@@ -1,12 +1,12 @@
 
 import 'package:flutter/material.dart';
 
-import '../../models/sale/Sale.dart';
+import '../../models/sale/Invoice.dart';
 import '../../models/sale/inventory_out.dart';
 import 'bill_row_header_widget.dart';
 
 class ProductBillWidget extends StatefulWidget {
-  Sale sale;
+  Invoice sale;
    ProductBillWidget({Key? key , required this.sale}) : super(key: key);
 
   @override

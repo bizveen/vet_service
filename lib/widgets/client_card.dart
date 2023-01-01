@@ -7,9 +7,9 @@ import 'package:getwidget/getwidget.dart';
 
 import '../constants.dart';
 import '../models/client_model.dart';
-import '../models/sale/Sale.dart';
+import '../models/sale/Invoice.dart';
 import '../resources/firebase_database_methods.dart';
-import '../screens/shop_screens/bill_screen.dart';
+import '../screens/shop_screens/invoice_screen.dart';
 import '../screens/view_details_screens/view_client_details_screen/view_client_details_screen.dart';
 
 class ClientCard extends StatefulWidget {
@@ -46,11 +46,11 @@ class _ClientCardState extends State<ClientCard> {
 
                 itemBuilder: (context, snapshot) {
 
-                  Sale sale = Sale.fromJson(
+                  Invoice invoice = Invoice.fromJson(
                       snapshot.value as Map<dynamic, dynamic>);
-                  return sale.isActive! ? InkWell(
+                  return invoice.isActive! ? InkWell(
                     onTap: (){
-                      Get.to(()=>BillScreen(sale: sale,));
+                      Get.to(()=>InvoiceScreen(invoiceId: invoice.id!,));
                     },
                     child: Container(
                       height: 30,
@@ -60,7 +60,7 @@ class _ClientCardState extends State<ClientCard> {
                         MainAxisAlignment.spaceAround,
                         children: [
                           const Text('Bill'),
-                          Text(((sale.getTotalCharges() != 0 ? sale.getTotalCharges() : '0'))
+                          Text(((invoice.getTotalCharges() != 0 ? invoice.getTotalCharges() : '0'))
                               .toString()),
                         ],
                       ),

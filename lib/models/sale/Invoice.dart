@@ -22,8 +22,8 @@ import 'inventory_out.dart';
 /// type : "vaccination"
 /// vaccination : {"id":"sdasd"}
 
-class Sale {
-  Sale({
+class Invoice {
+  Invoice({
     required this.clientStatus,
     this.clientId,
     this.closedBy,
@@ -44,7 +44,7 @@ class Sale {
 
   });
 
-  Sale.fromJson(dynamic json) {
+  Invoice.fromJson(dynamic json) {
     clientId = json['clientId'];
     closedBy = json['closedBy'];
     dateTime = json['dateTime'];
@@ -135,7 +135,7 @@ class Sale {
    double totalChargesForProducts = 0;
 
 
-  Sale copyWith({
+  Invoice copyWith({
     String? clientId,
     String? closedBy,
     int? dateTime,
@@ -154,7 +154,7 @@ class Sale {
     List<Vaccines?>? vaccineList,
     int ? clientStatus,
   }) =>
-      Sale(
+      Invoice(
         clientId: clientId ?? this.clientId,
         closedBy: closedBy ?? this.closedBy,
         dateTime: dateTime ?? this.dateTime,

@@ -10,7 +10,7 @@ import '../../widgets/pet_record_card/pet_record_card_widget.dart';
 import '../vaccination_screens/add_vaccination_screen/add_vaccination_screen.dart';
 import '../vaccination_screens/view_vaccination_details_screen.dart';
 
-viewVaccinationList({required Pet pet}){
+viewVaccinationList({required Pet pet , required bool isClientActive}){
   pet.vaccinations!.sort((a, b) => b!.givenDate! - a!.givenDate!,);
   Get.defaultDialog(
       title: 'Vaccination Records (${pet.vaccinations!.length})',
@@ -21,7 +21,7 @@ onConfirm: (){
         IconButton(
         icon: Icon(Icons.add),
           onPressed: (){
-          Get.to(AddVaccinationScreen(pet: pet));
+          Get.to(AddVaccinationScreen(pet: pet, isClientActive: isClientActive,));
         },)
       ],
       content: SizedBox(

@@ -9,6 +9,7 @@ import 'package:getwidget/getwidget.dart';
 import 'package:string_extensions/string_extensions.dart';
 import 'package:uuid/uuid.dart';
 import 'package:vet_service/resources/firebase_firestore_methods.dart';
+import 'package:vet_service/screens/complain_screens/inspection_screen.dart';
 
 import '../../../constants.dart';
 import '../../../constants.dart';
@@ -27,18 +28,18 @@ import '../../utils/utils.dart';
 import '../../widgets/container_with_border.dart';
 import '../../widgets/drop_down_list_from_databse_widget_multi_select.dart';
 import '../../widgets/text_field_x.dart';
-import 'local_widgets/first_inspection_organ_system_input_widget.dart';
+import 'local_widgets/inspection_organ_system_input_widget.dart';
 import 'local_widgets/first_inspection_select_widget.dart';
 
 class AddComplainScreen extends StatefulWidget {
   Pet pet;
 Complain? complain;
-Map<dynamic, dynamic> firstInspectionMap;
+Map<dynamic, dynamic> inspectionMap;
   AddComplainScreen({
     Key? key,
     required this.pet,
     this.complain,
-    required this.firstInspectionMap
+    required this.inspectionMap
 
   }) : super(key: key);
 
@@ -67,7 +68,7 @@ String ? imageDescription;
   }
 @override
   void initState() {
-  chkList = List.generate(widget.firstInspectionMap.length, (index) => false);
+  chkList = List.generate(widget.inspectionMap.length, (index) => false);
    temperatureController = TextEditingController(
        text: widget.complain!=null ? widget.complain!.firstInspection!.temperature??'' :null);
 
@@ -92,6 +93,9 @@ String ? imageDescription;
             controller: temperatureController,
           ),
           const Text('Initial Examination'),
+ElevatedButton(onPressed: (){
+  Get.to(InspectionScreen(inspectionMap: widget.inspectionMap));
+}, child: Text("Inspection Screen")),
 ElevatedButton(onPressed: () async {
   await getImageListDialogBox((comment, images) {
     imageDescription = comment;
@@ -104,9 +108,9 @@ ElevatedButton(onPressed: () async {
         child: SingleChildScrollView(
           child: Column(
                 children:
-                widget.firstInspectionMap.keys.map((e) {
-                  return FirstInspectionOrganSystemInputWidget(
-                      inspectionMap:widget.firstInspectionMap[e] , title: e,result: (result){
+                widget.inspectionMap.keys.map((e) {
+                  return InspectionOrganSystemInputWidget(
+                      inspectionMap:widget.inspectionMap[e] , title: e,result: (result){
                        organSystemList!.add(result);
 
                   },);

@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:collection/collection.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -138,6 +139,29 @@ Future<void> getImageListDialogBox(
       });
 }
 
+
+
+
+List<String> getCombinations(List<String> words) {
+  if (words.length == 1) {
+    return words;
+  }
+
+  List<String> combinations = [];
+  for (int i = 0; i < words.length; i++) {
+    String word = words[i];
+    List<String> remainingWords = List.from(words);
+    remainingWords.removeAt(i);
+    List<String> subCombinations = getCombinations(remainingWords);
+    for (String subCombination in subCombinations) {
+      combinations.add(word + ' ' + subCombination);
+    }
+  }
+  combinations.addAll(words);
+  return combinations;
+}
+
+
 // Future<void> saveTimeLineImagesToFirebase(
 //     {List<Uint8List>? images,
 //     String? comment,
@@ -243,3 +267,10 @@ Future<void> getImageListDialogBox(
         );
       }
     }
+
+class Tuple2<T1, T2> {
+  final T1 item1;
+  final T2 item2;
+
+  Tuple2(this.item1, this.item2);
+}

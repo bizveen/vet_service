@@ -1,10 +1,12 @@
+import 'package:equatable/equatable.dart';
+
 /// comment : ""
 /// contact : ""
 /// id : ""
 /// path : ""
 /// quickComment : ""
 
-class Contact {
+class Contact extends Equatable {
   Contact({
     this.status,
       this.comment, 
@@ -72,5 +74,8 @@ Contact copyWith({  String? comment,
     map['clientId'] = clientId;
     return map;
   }
+
+  @override
+  List<Object?> get props => [contactNumber];
 
 }

@@ -7,6 +7,7 @@ import '../models/client_model.dart';
 class ClientController  extends GetxController{
 
   Stream<ClientModel> getClientFromId(String clientId) {
+
     return FirebaseFirestore.instance
         .collection("clients").doc(clientId)
         .snapshots()
@@ -16,6 +17,8 @@ class ClientController  extends GetxController{
   TextEditingController addNewNumberController = TextEditingController();
   TextEditingController commentController = TextEditingController();
   TextEditingController balanceController = TextEditingController();
+
+  final editClientScreen = false.obs;
 
 
   @override

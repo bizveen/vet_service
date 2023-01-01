@@ -11,7 +11,8 @@ import '../../../popup_screens/vaccination_list_popup.dart';
 
 class VaccinationCardWidget2 extends StatefulWidget {
   Pet pet;
-   VaccinationCardWidget2({Key? key, required this.pet}) : super(key: key);
+  bool isActiveClient;
+   VaccinationCardWidget2({Key? key, required this.pet , required this.isActiveClient}) : super(key: key);
 
   @override
   State<VaccinationCardWidget2> createState() => _VaccinationCardWidget2State();
@@ -28,10 +29,11 @@ class _VaccinationCardWidget2State extends State<VaccinationCardWidget2> {
         child: Icon(Icons.vaccines),
       ),
         onAddButtonPressed: (){
-        Get.to(AddVaccinationScreen(pet: widget.pet,));
+
+        Get.to(AddVaccinationScreen(pet: widget.pet,isClientActive:  widget.isActiveClient, ));
         },
         onArrowButtonPressed: (){
-          viewVaccinationList(pet: widget.pet);
+          viewVaccinationList(pet: widget.pet , isClientActive: widget.isActiveClient);
         },
         title: 'Vaccinations',
         child:(widget.pet.vaccinations!= null && widget.pet.vaccinations!.isNotEmpty) ? Column(

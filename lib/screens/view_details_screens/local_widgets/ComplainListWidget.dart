@@ -52,7 +52,7 @@ class ComplainListWidget extends StatelessWidget {
                     .getFirstExaminationCategories();
                 Get.to(AddComplainScreen(
                   pet: pet,
-                  firstInspectionMap: map, //this is for creating inspection results objects
+                  inspectionMap: map, //this is for creating inspection results objects
                 ));
               },)
             ],

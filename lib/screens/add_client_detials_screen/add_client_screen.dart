@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
+import 'package:vet_service/widgets/RadioButtonSetWidget.dart';
 
 import '../../constants.dart';
 import '../../models/Contact.dart';
@@ -31,7 +32,7 @@ class _AddClientScreenState extends State<AddClientScreen> {
   AddClientScreenController controller = Get.put(AddClientScreenController());
   int index = 0;
   final _formKey = GlobalKey<FormState>();
-
+String title = "Mr.";
   List<TextEditingController> contactNoControllers = [
     TextEditingController(),
   ];
@@ -65,6 +66,9 @@ class _AddClientScreenState extends State<AddClientScreen> {
                     child: Text('Please fill your client details below'),
                   )),
               TinySpace(),
+             RadioButtonSet(options: ["Mr.", "Mrs.", "Ms.","Dr.", "Rev."], onChanged: (value){
+               title = value;
+             }),
               TextFieldX(
                 label: 'Client Name',
                 controller: clientNameController,
@@ -178,7 +182,7 @@ class _AddClientScreenState extends State<AddClientScreen> {
         isActive: false,
         id: id,
 
-        name: clientNameController.text.trim(),
+        name: "$title ${clientNameController.text.trim()}",
         address: addressController.text.trim(),
         area: controller.area.value,
         pets: [],
@@ -196,11 +200,12 @@ class _AddClientScreenState extends State<AddClientScreen> {
           contactNumber: element.text.trim()));
       contactListForSearch = contactListForSearch + ' ' + element.text.trim();
     }
+    print(contactList.length);
    //  await FirebaseDatabaseMethods().updateBatch(
    // updateClientJson(clientStatus: ClientStatus.real,clientId: clientModel.id!, json: [clientModel.toJson()])
    //  );
     clientModel.contacts = contactList;
-    print(clientModel.toJson());
+
     await FirebaseFirestoreMethods().addClientToFirestore(clientModel);
 // contactList.forEach((element) async {
 //   await FirebaseDatabaseMethods().updateBatch(
@@ -208,9 +213,6 @@ class _AddClientScreenState extends State<AddClientScreen> {
 //   );
 //
 // });
-
-    await SalesMethods(clientId: clientModel.id, clientStatus: ClientStatus.real).createASale();
-
     // FirebaseFirestoreMethods().addClientToSearch(
     //     clientId: clientModel.id!,
     //     searchWords: clientModel.name!.toLowerCase().trim().split(' ') +

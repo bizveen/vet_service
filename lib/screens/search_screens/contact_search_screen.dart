@@ -1,74 +1,64 @@
-
 import 'package:flutter/material.dart';
-import 'package:flutterfire_ui/database.dart';
 import 'package:get/get.dart';
+import 'package:vet_service/resources/firebase_database_methods.dart';
+import 'package:vet_service/utils/utils.dart';
 
-import '../../constants.dart';
 import '../../models/Contact.dart';
-import '../../resources/firebase_database_methods.dart';
-import '../view_details_screens/view_client_details_screen/view_client_details_screen.dart';
 
 class ContactSearchScreen extends StatefulWidget {
-  const ContactSearchScreen({Key? key}) : super(key: key);
-
   @override
-  State<ContactSearchScreen> createState() => _ContactSearchScreenState();
+  _ContactSearchScreenState createState() => _ContactSearchScreenState();
 }
 
 class _ContactSearchScreenState extends State<ContactSearchScreen> {
-  TextEditingController numberSearchController = TextEditingController();
-  late String numberSearch;
-  @override
-  void initState() {
-    numberSearch = numberSearchController.text;
-    super.initState();
-  }
-  @override
-  void dispose() {
-    numberSearchController.dispose();
-    super.dispose();
-  }
+  String _searchQuery = "";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Search Contacts'),
+      ),
       body: Column(
-        mainAxisSize: MainAxisSize.min,
         children: [
-          TextButton(child: const Text('Search by Contact Number'), onPressed: () {
-            setState((){
-              numberSearch = numberSearchController.text;
-            });
-
-          },),
-          TextFormField(
-            controller: numberSearchController,
-            onChanged: (value){
+          TextField(
+            onChanged: (query) {
               setState(() {
-                numberSearch = value;
+                _searchQuery = query;
               });
             },
           ),
           Expanded(
-            child: FirebaseDatabaseListView(
-                query: FirebaseDatabaseMethods().reference(path: '$doctorPath/contacts').orderByChild('contactNo').startAt(numberSearch).endAt('$numberSearch\uf8ff'),
-                shrinkWrap: true,
-                itemBuilder: (context, snapshot){
-                  Contact contact = Contact.fromJson(snapshot.value);
-                  return ListTile(
-                    title: Text(contact.contactNumber.toString()),
-                    subtitle: Text(contact.clientName.toString()),
-                    trailing:  IconButton(icon: const Icon(Icons.arrow_circle_right), onPressed: () {
-                      Get.to(ViewClientDetailsScreen(clientId: contact.clientId!));
-                    },
-
-
-                    ),
+            child: FutureBuilder(
+              future: FirebaseDatabaseMethods().getSearchResults2(getCombinations(_searchQuery.split(' '))),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(),
                   );
-                }),
-          )
+                } else if (snapshot.hasError) {
+                  return Center(
+                    child: Text('Error: ${snapshot.error}'),
+                  );
+                } else {
+                  List<Contact> contacts = snapshot.data as List<Contact>;
+                  return ListView.builder(
+                    itemCount: contacts.length,
+                    itemBuilder: (context, index) {
+                      Contact contact = contacts[index];
+                      return ListTile(
+                        title: Text(contact.clientName ?? "No Name"),
+                        subtitle: Text(contact.contactNumber ?? "No Number"),
+                      );
+                    },
+                  );
+                }
+              },
+            ),
+          ),
         ],
-       
       ),
     );
   }
+
 }

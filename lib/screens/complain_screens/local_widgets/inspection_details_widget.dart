@@ -5,8 +5,8 @@ import '../../../models/complain/Complain.dart';
 import '../../../widgets/container_with_border.dart';
 import 'decoration_widget.dart';
 
-class FirstInspectionDetailsWidget extends StatelessWidget {
-   FirstInspectionDetailsWidget({
+class InspectionDetailsWidget extends StatelessWidget {
+   InspectionDetailsWidget({
     Key? key,
     required this.onPressed,
     required this.complain,

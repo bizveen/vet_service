@@ -7,11 +7,12 @@ import '../models/Vaccination.dart';
 import '../models/Vaccine.dart';
 import '../models/client_model.dart';
 import '../models/complain/Treatment.dart';
-import '../models/sale/Sale.dart';
+import '../models/sale/Invoice.dart';
 import '../utils/utils.dart';
 import 'database_object_paths/other_paths.dart';
 import 'database_object_paths/sales_paths.dart';
 import 'firebase_database_methods.dart';
+import 'firebase_firestore_methods.dart';
 
 class SalesMethods {
   ClientStatus clientStatus;
@@ -50,11 +51,11 @@ class SalesMethods {
 
   Future<void> createASale() async {
     if(clientId!= null){
-    ClientModel client = await FirebaseDatabaseMethods().getClientFromID(id : clientId!, clientStatus: clientStatus);
+    ClientModel client = await FirebaseFirestoreMethods().getClientFromFirestore( clientId:  clientId!);
 
     if (client.isActive == null || !client.isActive!) {
       final String currentId = const Uuid().v1();
-      Sale sale = Sale(
+      Invoice sale = Invoice(
         clientStatus: clientStatus.index,
         startedBy: FirebaseAuth.instance.currentUser!.email,
         isActive: true,
@@ -85,7 +86,7 @@ class SalesMethods {
       }
     }
   } else{
-      Sale sale = Sale(
+      Invoice sale = Invoice(
         clientStatus: clientStatus.index,
         startedBy: FirebaseAuth.instance.currentUser!.email,
         isActive: true,

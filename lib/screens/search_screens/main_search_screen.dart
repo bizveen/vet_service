@@ -10,14 +10,14 @@ import 'package:uuid/uuid.dart';
 
 import '../../constants.dart';
 import '../../models/client_model.dart';
-import '../../models/sale/Sale.dart';
+import '../../models/sale/Invoice.dart';
 import '../../resources/database_object_paths/other_paths.dart';
 import '../../resources/firebase_database_methods.dart';
 import '../../resources/sales_methods.dart';
 import '../../utils/tiny_space.dart';
 import '../../utils/utils.dart';
 import '../add_pet_screen/add_pet_screen.dart';
-import '../shop_screens/bill_screen.dart';
+import '../shop_screens/invoice_screen.dart';
 import '../shop_screens/products_showcase_screen.dart';
 import 'client_search_screen.dart';
 import 'contact_search_screen.dart';
@@ -94,7 +94,7 @@ class _MainSearchScreenState extends State<MainSearchScreen> {
           ),
             body: PageView(
                 controller: pageController, children: const [
-              ContactSearchScreen(),
+
             //  ClientListScreen(),
               ClientSearchScreen(),
               PetSearchScreen()
@@ -112,10 +112,10 @@ class _MainSearchScreenState extends State<MainSearchScreen> {
                       .orderByChild('isActive')
                       .equalTo(true),
                   builder: (context, snapshot, _) {
-                    List<Sale> saleList = [];
+                    List<Invoice> saleList = [];
                     dataSnapShotListToMap(children: snapshot.docs)
                         .forEach((key, value) {
-                      Sale sale = Sale.fromJson(value);
+                      Invoice sale = Invoice.fromJson(value);
                       if (!sale.getTotalCharges().isEqual(0)) {
                         saleList.add(sale);
                       }
@@ -135,7 +135,7 @@ class _MainSearchScreenState extends State<MainSearchScreen> {
                                         const EdgeInsets.symmetric(vertical: 2),
                                     child: InkWell(
                                       onTap: (){
-                                        Get.to(BillScreen(sale: e));
+                                        Get.to(InvoiceScreen(invoiceId: e.id!));
                                       },
                                       child: GFBadge(
 

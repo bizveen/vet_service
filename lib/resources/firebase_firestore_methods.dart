@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:developer';
-
 import 'package:call_log/call_log.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,13 +8,13 @@ import 'package:firebase_database/firebase_database.dart';
 
 import '../constants.dart';
 import '../controllers/global_live_variables_controller.dart';
-import '../models/Pet.dart';
 import '../models/client_model.dart';
 import '../models/log.dart';
 import 'firebase_database_methods.dart';
 
 class FirebaseFirestoreMethods {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+
 
   List<String> wordToElementList(String word) {
     List<String> elementList = [];
@@ -113,13 +110,13 @@ class FirebaseFirestoreMethods {
 
  Future<ClientModel> getClientFromFirestore  (
       {required String clientId}) async {
-   ClientModel client = ClientModel.fromJson(  (await firestore
-        .collection(
-        'clients')
-        .doc(clientId).get()).data()
-         );
-   print('=========================++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
-   print(client.toJson());
+   DocumentSnapshot ref = await firestore
+       .collection(
+       'clients')
+       .doc(clientId).get();
+   print(ref.get('clientId'));
+   print(ref.data());
+   ClientModel client = ClientModel.fromJson(ref.data());
    return client;
   }
 

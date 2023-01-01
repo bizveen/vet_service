@@ -2,7 +2,7 @@ import 'Contact.dart';
 import 'Pet.dart';
 import 'Purchasing.dart';
 import 'log.dart';
-import 'sale/Sale.dart';
+import 'sale/Invoice.dart';
 
 /// address : ""
 /// id : ""
@@ -23,7 +23,7 @@ class ClientModel {
   // List<String?>? paths;
   List<Pet?>? pets;
   List<Purchasing?>? purchasing;
-  List<Sale?>? salesList;
+  List<Invoice?>? salesList;
   String? area;
   String? currentActiveCaseId;
   String? searchIndex;
@@ -47,7 +47,7 @@ class ClientModel {
       this.isActive,
       this.salesList,
       this.doctorId,
-      required this.clientStatus,
+      this.clientStatus,
       this.balance});
 
   ClientModel.fromJson(dynamic json) {
@@ -66,14 +66,14 @@ class ClientModel {
     }
     logs = _logList;
 
-    List<Sale> _salesList = [];
+    List<Invoice> _salesList = [];
 
     if (json['sales'] != null) {
       Map<dynamic, dynamic> _map = json['sales'] as Map<dynamic, dynamic>;
 
       _map.forEach(
         (key, element) {
-          _salesList.add(Sale.fromJson(element));
+          _salesList.add(Invoice.fromJson(element));
         },
       );
     }
@@ -144,7 +144,7 @@ class ClientModel {
     String? searchIndex,
     bool? isActive,
     String? doctorId,
-    List<Sale?>? salesList,
+    List<Invoice?>? salesList,
     int? clientStatus,
     String? balance,
   }) =>
@@ -172,7 +172,7 @@ class ClientModel {
     Map<String, Map<String, dynamic>> contactMap = {};
     if (contacts != null && contacts!.isNotEmpty) {
       for (var element in contacts!) {
-       // contactMap[element!.contactNumber!] = element.toJson();
+       contactMap[element!.contactNumber!] = element.toJson();
       }
     }
     map['address'] = address;

@@ -142,7 +142,7 @@ class _AddPetScreenState extends State<AddPetScreen> {
                      });
 
                    }));
-                 }, child: Text(widget.client!= null ? widget.client!.name! : "Add Client"),
+                 }, child: Text(clientModel!= null ? clientModel!.name! : "Add Client"),
                 ),
               ),
               Padding(

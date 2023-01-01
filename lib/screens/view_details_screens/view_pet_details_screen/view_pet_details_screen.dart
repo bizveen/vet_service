@@ -9,7 +9,6 @@ import 'package:vet_service/controllers/client_controller.dart';
 import '../../../models/Pet.dart';
 import '../../../models/client_model.dart';
 
-import '../../edit_screens/edit_pet_details_screen.dart';
 import '../../timeline_screen/timeline_screen.dart';
 import 'local_widgets/complain_card_widget.dart';
 import 'local_widgets/pet_header_card_widget.dart';
@@ -52,7 +51,7 @@ String petId;
                   actions: [
                     IconButton(
                         onPressed: () {
-                          Get.to(EditPetDetailsScreen(petId: pet.id!));
+                         // Get.to(EditPetDetailsScreen(petId: pet.id!));
                         },
                         icon: Icon(Icons.edit))
                   ],
@@ -73,7 +72,7 @@ String petId;
 
                         //VaccinationListWidget(pet: pet),
 
-                        VaccinationCardWidget2(pet: pet),
+                        VaccinationCardWidget2(pet: pet , isActiveClient: client.isActive ?? false),
                         ComplainCardWidget(pet: pet , client: client,),
                         WeightCardWidget(pet: pet),
                         ElevatedButton(

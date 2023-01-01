@@ -2,10 +2,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/database.dart';
 import 'package:get/get.dart';
+import 'package:vet_service/constants.dart';
 import '../../models/client_model.dart';
-import '../../models/sale/Sale.dart';
+import '../../models/sale/Invoice.dart';
 import '../../resources/firebase_database_methods.dart';
-import '../../screens/shop_screens/bill_screen.dart';
+import '../../screens/shop_screens/invoice_screen.dart';
 import '../../utils/tiny_space.dart';
 import '../../utils/utils.dart';
 import 'product_bill_widget.dart';
@@ -14,9 +15,9 @@ import 'vaccination_bill_widget.dart';
 
 class TotalBillWidgets extends StatefulWidget {
   ClientStatus clientStatus;
-  String saleId;
+  String invoiceId;
 
-   TotalBillWidgets({Key? key , required this.saleId,required this.clientStatus}) : super(key: key);
+   TotalBillWidgets({Key? key , required this.invoiceId,required this.clientStatus}) : super(key: key);
 
   @override
   State<TotalBillWidgets> createState() => _TotalBillWidgetsState();
@@ -28,12 +29,12 @@ class _TotalBillWidgetsState extends State<TotalBillWidgets> {
     return SingleChildScrollView(
 
       child: FirebaseDatabaseQueryBuilder(
-          query: FirebaseDatabaseMethods().reference(path: 'sales/${widget.saleId}'),
+          query: FirebaseDatabaseMethods().reference(path: '$doctorPath/invoices/${widget.invoiceId}'),
           builder: (context , snapshot , _) {
-            Sale sale = Sale.fromJson(dataSnapShotListToMap(children: snapshot.docs));
+            Invoice invoice = Invoice.fromJson(dataSnapShotListToMap(children: snapshot.docs));
           return InkWell(
             onTap: (){
-              Get.to(BillScreen(sale: sale));
+              Get.to(InvoiceScreen(invoiceId: widget.invoiceId));
             },
             child:
             Column(
@@ -49,10 +50,10 @@ class _TotalBillWidgetsState extends State<TotalBillWidgets> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      BillLine(value: sale.getTotalCharges().toStringAsFixed(2)),
-                      sale.inventoryOutList != null ? ProductBillWidget(sale: sale) : Container(),
-                      sale.vaccineList != null ? VaccinesBillWidget(sale: sale) : Container(),
-                      sale.treatmentList != null ? TreatmentBillWidget(sale: sale,) : Container(),
+                      BillLine(value: invoice.getTotalCharges().toStringAsFixed(2)),
+                      invoice.inventoryOutList != null ? ProductBillWidget(sale: invoice) : Container(),
+                      invoice.vaccineList != null ? VaccinesBillWidget(sale: invoice) : Container(),
+                      invoice.treatmentList != null ? TreatmentBillWidget(sale: invoice,) : Container(),
                     ],
                   ),
                 ),

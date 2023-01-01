@@ -1,10 +1,9 @@
 import 'package:call_log/call_log.dart';
 
-
-
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:firebase_database/firebase_database.dart';
+import 'package:get_storage/get_storage.dart';
 
 import '../constants.dart';
 import '../models/Contact.dart';
@@ -22,7 +21,7 @@ import '../models/oldDb/OldPet.dart';
 import '../models/oldDb/OldTreatDay.dart';
 import '../models/oldDb/OldTreatmentCategory.dart';
 import '../models/oldDb/OldVaccination.dart';
-import '../models/sale/Sale.dart';
+import '../models/sale/Invoice.dart';
 import '../utils/utils.dart';
 import 'database_object_paths/log_paths.dart';
 import 'database_object_paths/vaccination_paths.dart';
@@ -40,7 +39,7 @@ class FirebaseDatabaseMethods {
   //   return _instance;
   // }
 
- // FirebaseDatabaseMethods() : ref = FirebaseDatabase.instance.ref();
+  // FirebaseDatabaseMethods() : ref = FirebaseDatabase.instance.ref();
 
   Future<void> addMapToDb({required path, required Map map}) async {
     await ref.child(path).set(map);
@@ -54,13 +53,12 @@ class FirebaseDatabaseMethods {
     await ref.update(map);
   }
 
-  Stream<UserModel?> getDoctorDetailsStream(String doctorId)  {
+  Stream<UserModel?> getDoctorDetailsStream(String doctorId) {
     UserModel? user;
-    Stream<DatabaseEvent> dbStream =   ref.child('users/$doctorId').onValue;
+    Stream<DatabaseEvent> dbStream = ref.child('users/$doctorId').onValue;
     print(dbStream);
-return (  dbStream.map((event) => UserModel.fromJson(event.snapshot)));
+    return (dbStream.map((event) => UserModel.fromJson(event.snapshot)));
   }
-
 
   Future<void> updateBatchUsingPath(
       {required String path, required Map<String, dynamic> map}) async {
@@ -71,7 +69,51 @@ return (  dbStream.map((event) => UserModel.fromJson(event.snapshot)));
     return ref.child(path).set({});
   }
 
+  Future<List<Contact>> getSearchResults2(List<String> queries) async {
+    List<Future<DataSnapshot>> snapshotFutures = [];
 
+    for (String query in queries) {
+      snapshotFutures.add(FirebaseDatabase.instance.ref("$doctorPath")
+          .child('contactNumbersList')
+          .orderByChild('clientName')
+          .startAt(query)
+          .endAt(query + '\uf8ff')
+          .get());
+    }
+
+    List<DataSnapshot> snapshots = await Future.wait(snapshotFutures);
+    List<Contact> contacts = [];
+    snapshots.forEach((snapshot) {
+      snapshot.children.forEach((element) {
+        contacts.add(Contact.fromJson(element.value));
+      });
+
+    });
+    // Transform the list of DataSnapshots into a list of Contact objects
+
+    return contacts.toSet().toList();
+  }
+
+
+
+  Future<List<Contact>> getSearchResults(String searchQuery) async {
+    DataSnapshot snapshot = await FirebaseDatabase.instance
+        .ref("$doctorPath")
+        .child('contactNumbersList')
+        .orderByChild('clientName')
+        .startAt(searchQuery)
+        .endAt(searchQuery + '\uf8ff')
+        .get();
+
+    List<Contact> contacts = [];
+    Map<dynamic, dynamic> values = snapshot.value as Map<dynamic, dynamic>;
+    values.forEach((key, value) {
+      Contact contact = Contact.fromJson(value);
+      contact.id = key;
+      contacts.add(contact);
+    });
+    return contacts;
+  }
 
 
 
@@ -141,7 +183,7 @@ return (  dbStream.map((event) => UserModel.fromJson(event.snapshot)));
     }
   }
 
-  Future<Sale> getSaleFromID(String id) async {
+  Future<Invoice> getSaleFromID(String id) async {
     DataSnapshot snapshot = await reference(path: 'sales/$id').get();
 
     Map<dynamic, dynamic> map = {};
@@ -149,7 +191,7 @@ return (  dbStream.map((event) => UserModel.fromJson(event.snapshot)));
     snapshot.children.forEach((element) {
       map[element.key] = element.value;
     });
-    Sale sale = Sale.fromJson(map);
+    Invoice sale = Invoice.fromJson(map);
 
     return sale;
   }
@@ -199,27 +241,24 @@ return (  dbStream.map((event) => UserModel.fromJson(event.snapshot)));
     snapshot.children.forEach((element) {
       map[(element.value as dynamic)!['key']] =
           OldContactNumber.fromJson(element.value);
-      
     });
     return map;
   }
 
-
   Future<Map<dynamic, Pet>> getPetsList() async {
-    print('============================================================================= Getting Pet List');
+    print(
+        '============================================================================= Getting Pet List');
     DataSnapshot snapshot = await reference(path: 'pets').get();
-print(snapshot.children.length);
+    print(snapshot.children.length);
     Map<dynamic, Pet> map = {};
-int i=0;
+    int i = 0;
     snapshot.children.forEach((element) {
-      map[(element.value as dynamic)!['key']] =
-          Pet.fromJson(element.value);
+      map[(element.value as dynamic)!['key']] = Pet.fromJson(element.value);
       print(i++);
       print(element.value);
     });
     return map;
   }
-
 
   Future<Map<dynamic, Contact>> getContactsList() async {
     DataSnapshot snapshot = await reference(path: 'contacts').get();
@@ -227,8 +266,7 @@ int i=0;
     Map<dynamic, Contact> map = {};
 
     snapshot.children.forEach((element) {
-      map[(element.value as dynamic)!['key']] =
-          Contact.fromJson(element.value);
+      map[(element.value as dynamic)!['key']] = Contact.fromJson(element.value);
       print(element.value);
     });
     return map;
@@ -305,23 +343,17 @@ int i=0;
     });
     return map;
   }
+
   Future<Map<dynamic, Complain>> getAllComplainsList() async {
     DataSnapshot snapshot = await reference(path: 'complains/all').get();
-
-
 
     Map<dynamic, Complain> map = {};
 
     snapshot.children.forEach((element) {
-      map[(element.value as dynamic)!['id']] =
-          Complain.fromJson(element.value);
+      map[(element.value as dynamic)!['id']] = Complain.fromJson(element.value);
     });
     return map;
   }
-
-
-
-
 
   Future<Map<dynamic, OldTreatmentCategory>>
       getTreatmentCategoriesFromOldDB() async {
@@ -367,10 +399,8 @@ int i=0;
   Future<ClientModel> getClientFromID(
       {required String id,
       ClientStatus clientStatus = ClientStatus.real}) async {
-
     DataSnapshot snapshot =
-        await reference(path: 'clients/${clientStatus.name}/$id')
-            .get();
+        await reference(path: 'clients/${clientStatus.name}/$id').get();
 
     Map<dynamic, dynamic> map = {};
 

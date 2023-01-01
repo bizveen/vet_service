@@ -124,11 +124,14 @@ class AddTreatmentScreen extends GetView<AddTreatmentScreenController> {
                          {
                            "pets.${complain.petId}.complains.${complain.id}.treatments.$treatmentId" : treatment.toJson()
                          });
-                      await SalesMethods(
-                        clientStatus: ClientStatus.real,
-                              clientId: complain.clientID!,
-                              treatment: treatment)
-                          .createASale();
+
+
+
+                      // await SalesMethods(
+                      //   clientStatus: ClientStatus.real,
+                      //         clientId: complain.clientID!,
+                      //         treatment: treatment)
+                      //     .createASale();
                       // treatment.complainPath != null
                       //     ? FirebaseDatabaseMethods().updateBatch({
                       //         treatment.path!: treatment.toJson(),

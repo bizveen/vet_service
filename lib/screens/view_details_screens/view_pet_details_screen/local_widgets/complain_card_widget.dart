@@ -41,13 +41,13 @@ bool complainLoading = false;
         });
           Map<dynamic, dynamic> map = await FirebaseDatabaseMethods()
               .getFirstExaminationCategories();
-        Get.to(AddComplainScreen(pet: widget.pet, firstInspectionMap: map));
+        Get.to(AddComplainScreen(pet: widget.pet, inspectionMap: map));
         setState(() {
           complainLoading = false;
         });
         },
         onArrowButtonPressed: (){
-          viewComplainList(pet: widget.pet);
+          viewComplainList(pet: widget.pet , isClientActive: widget.client.isActive ?? false);
         },
         title: 'Complains',
         child:(widget.pet.complains!= null && widget.pet.complains!.isNotEmpty) ? Column(

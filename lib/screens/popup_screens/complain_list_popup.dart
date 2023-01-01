@@ -14,7 +14,7 @@ import '../complain_screens/complain_details_screen.dart';
 import '../vaccination_screens/add_vaccination_screen/add_vaccination_screen.dart';
 import '../vaccination_screens/view_vaccination_details_screen.dart';
 
-viewComplainList({required Pet pet}){
+viewComplainList({required Pet pet, required bool isClientActive}){
 
   Get.defaultDialog(
       title: 'Vaccination Records (${pet.complains!.length})',
@@ -25,7 +25,7 @@ onConfirm: (){
         IconButton(
         icon: Icon(Icons.add),
           onPressed: (){
-          Get.to(AddVaccinationScreen(pet: pet));
+          Get.to(AddVaccinationScreen(pet: pet , isClientActive: isClientActive,));
         },)
       ],
       content: SizedBox(
